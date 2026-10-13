@@ -67,5 +67,4 @@ npm run preview
 ---
 
 ## ⚖️ Disclaimer
-
 Brainrot University is an unaccredited satirical project built for entertainment purposes. All certificates, professors, scores, and institutions are fictional.
