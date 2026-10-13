@@ -1,7 +1,7 @@
 import { useState, useCallback } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, User } from 'lucide-react';
+import { Menu, X } from 'lucide-react';
 import type { StudentProfile } from '../types';
 
 interface NavbarProps {
@@ -18,7 +18,7 @@ const NAV_LINKS = [
   { label: 'Faculty', to: '/faculty' },
 ];
 
-export default function Navbar({ onCrestClick, profile }: NavbarProps) {
+export default function Navbar({ onCrestClick, profile: _profile }: NavbarProps) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [clickCount, setClickCount] = useState(0);
   const location = useLocation();
@@ -79,25 +79,16 @@ export default function Navbar({ onCrestClick, profile }: NavbarProps) {
             ))}
           </div>
 
-          {/* Right side buttons */}
-          <div className="hidden lg:flex items-center gap-2 shrink-0">
-            {profile && (
-              <div className="flex items-center gap-2 text-sm text-[#F0EBDD] mr-2">
-                <User size={14} className="text-[#888888]" />
-                <span className="text-[#888888]">{profile.name}</span>
-              </div>
-            )}
+          {/* Right side information badge */}
+          <div className="hidden lg:flex items-center gap-3 shrink-0">
+            <span className="text-xs font-mono font-bold text-[#090909] bg-[#C6FF00] px-3 py-1.5 rounded-full uppercase tracking-widest">
+              Unserious Archive
+            </span>
             <Link
-              to="/student-portal"
-              className="px-4 py-2 rounded text-sm font-semibold text-[#F0EBDD] bg-[#641C2B] hover:bg-[#7a2234] transition-colors duration-150"
+              to="/courses"
+              className="px-4 py-2 rounded text-sm font-bold text-[#F0EBDD] bg-[#641C2B] hover:bg-[#7a2234] transition-colors duration-150"
             >
-              Student Portal
-            </Link>
-            <Link
-              to="/apply"
-              className="px-4 py-2 rounded text-sm font-bold text-[#090909] bg-[#C6FF00] hover:bg-[#d4ff33] transition-colors duration-150"
-            >
-              Apply Now
+              Course Compendium
             </Link>
           </div>
 
@@ -140,25 +131,12 @@ export default function Navbar({ onCrestClick, profile }: NavbarProps) {
                 </Link>
               ))}
               <div className="border-t border-white/10 my-2" />
-              {profile && (
-                <div className="flex items-center gap-2 px-3 py-2 text-sm text-[#888888]">
-                  <User size={14} />
-                  <span>{profile.name}</span>
-                </div>
-              )}
               <Link
-                to="/student-portal"
-                onClick={() => setMobileOpen(false)}
-                className="px-3 py-2 rounded text-sm font-semibold text-center text-[#F0EBDD] bg-[#641C2B] hover:bg-[#7a2234] transition-colors"
-              >
-                Student Portal
-              </Link>
-              <Link
-                to="/apply"
+                to="/courses"
                 onClick={() => setMobileOpen(false)}
                 className="px-3 py-2 rounded text-sm font-bold text-center text-[#090909] bg-[#C6FF00] hover:bg-[#d4ff33] transition-colors"
               >
-                Apply Now
+                Explore Courses
               </Link>
             </div>
           </motion.div>

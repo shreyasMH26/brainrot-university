@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { CheckCircle, Clock, Star, User, BookOpen } from 'lucide-react';
+import { Clock, Star, User, BookOpen } from 'lucide-react';
 import type { Course } from '../types';
 import { getProfessorById } from '../data/professors';
 
@@ -23,7 +23,7 @@ export default function CourseCard({
   course,
   isEnrolled = false,
   isCompleted = false,
-  onEnroll,
+  onEnroll: _onEnroll,
   compact = false,
 }: CourseCardProps) {
   const navigate = useNavigate();
@@ -123,26 +123,15 @@ export default function CourseCard({
           </div>
         )}
 
-        {/* Spacer + CTA */}
+        {/* Spacer + Action */}
         <div className="mt-auto pt-3">
-          {isCompleted ? (
-            <div className="flex items-center gap-1.5 text-sm font-semibold text-[#C6FF00]">
-              <CheckCircle size={15} />
-              Completed ✓
-            </div>
-          ) : isEnrolled ? (
-            <div className="flex items-center gap-1.5 text-sm font-semibold text-[#888888]">
-              <BookOpen size={15} />
-              Enrolled ✓
-            </div>
-          ) : (
-            <button
-              onClick={onEnroll}
-              className="w-full py-2 rounded text-sm font-bold text-[#090909] bg-[#C6FF00] hover:bg-[#d4ff33] active:scale-95 transition-all duration-150"
-            >
-              Enroll
-            </button>
-          )}
+          <button
+            onClick={handleTitleClick}
+            className="w-full py-2.5 rounded text-xs font-black uppercase tracking-wider text-[#090909] bg-[#C6FF00] hover:bg-[#d4ff33] active:scale-95 transition-all duration-150 flex items-center justify-center gap-1.5"
+          >
+            <BookOpen size={14} />
+            View Course & Syllabus →
+          </button>
         </div>
       </div>
     </motion.div>

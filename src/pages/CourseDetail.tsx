@@ -5,7 +5,6 @@ import {
   BookOpen,
   CheckCircle2,
   Clock,
-  Download,
   FlaskConical,
   GraduationCap,
   Tag,
@@ -81,7 +80,7 @@ function gradeColor(grade: string): string {
 // ─────────────────────────────────────────────
 // Component
 // ─────────────────────────────────────────────
-export default function CourseDetail({ profile, onEnroll }: CourseDetailProps) {
+export default function CourseDetail({ profile, onEnroll: _onEnroll }: CourseDetailProps) {
   const { courseId } = useParams<{ courseId: string }>();
 
   // ── Guard: unknown course ──────────────────
@@ -96,7 +95,6 @@ export default function CourseDetail({ profile, onEnroll }: CourseDetailProps) {
   const department = getDepartmentById(course.departmentId);
   const professor = getProfessorById(course.professorId);
 
-  const isEnrolled = profile?.enrolledCourses.includes(course.id) ?? false;
   const isCompleted = profile?.completedCourses.includes(course.id) ?? false;
 
   // Get certificate if it exists
@@ -300,68 +298,23 @@ export default function CourseDetail({ profile, onEnroll }: CourseDetailProps) {
 
               {/* CTA buttons */}
               <div className="mt-6 space-y-3">
-                {!isEnrolled && !isCompleted && (
-                  <button
-                    type="button"
-                    onClick={() => onEnroll(course.id)}
-                    className="w-full rounded-xl py-3 text-sm font-black uppercase tracking-wide transition-all hover:opacity-90 active:scale-95"
-                    style={{ backgroundColor: '#C6FF00', color: '#090909' }}
-                  >
-                    Enrol in Course
-                  </button>
-                )}
-
-                {isEnrolled && !isCompleted && (
-                  <Link
-                    to={`/exam/${course.id}`}
-                    className="block w-full rounded-xl py-3 text-center text-sm font-black uppercase tracking-wide transition-all hover:opacity-90 active:scale-95"
-                    style={{ backgroundColor: '#C6FF00', color: '#090909' }}
-                  >
-                    Start Examination →
-                  </Link>
-                )}
-
-                {isCompleted && (
-                  <Link
-                    to={`/exam/${course.id}`}
-                    className="block w-full rounded-xl py-3 text-center text-sm font-bold uppercase tracking-wide border transition-opacity hover:opacity-80"
-                    style={{
-                      borderColor: 'rgba(255,255,255,0.15)',
-                      color: '#888888',
-                    }}
-                  >
-                    Retake Examination
-                  </Link>
-                )}
-
-                {/* Certificate download */}
-                {certificate && (
-                  <button
-                    type="button"
-                    className="flex w-full items-center justify-center gap-2 rounded-xl border py-3 text-sm font-bold transition-all hover:opacity-80"
-                    style={{
-                      borderColor: 'rgba(198,255,0,0.25)',
-                      color: '#C6FF00',
-                      backgroundColor: 'rgba(198,255,0,0.06)',
-                    }}
-                    onClick={() => {
-                      // Certificate download / view logic handled by parent or certificate util
-                      const blob = new Blob(
-                        [JSON.stringify(certificate, null, 2)],
-                        { type: 'application/json' },
-                      );
-                      const url = URL.createObjectURL(blob);
-                      const a = document.createElement('a');
-                      a.href = url;
-                      a.download = `certificate-${certificate.certificateCode}.json`;
-                      a.click();
-                      URL.revokeObjectURL(url);
-                    }}
-                  >
-                    <Download size={14} />
-                    Download Certificate
-                  </button>
-                )}
+                <Link
+                  to={`/exam/${course.id}`}
+                  className="block w-full rounded-xl py-3.5 text-center text-sm font-black uppercase tracking-wider transition-all hover:bg-[#d4ff33] active:scale-95 shadow-lg shadow-[#C6FF00]/10"
+                  style={{ backgroundColor: '#C6FF00', color: '#090909' }}
+                >
+                  Take Examination Now →
+                </Link>
+                <Link
+                  to="/courses"
+                  className="block w-full rounded-xl py-2.5 text-center text-xs font-bold uppercase tracking-wide border transition-opacity hover:opacity-80"
+                  style={{
+                    borderColor: 'rgba(255,255,255,0.15)',
+                    color: '#888888',
+                  }}
+                >
+                  ← Back to Courses
+                </Link>
               </div>
 
               {/* Certificate code display */}
@@ -440,53 +393,23 @@ export default function CourseDetail({ profile, onEnroll }: CourseDetailProps) {
           </ol>
         </motion.section>
 
-        {/* Bottom CTA: enrol or exam */}
+        {/* Bottom CTA */}
         <motion.div
           className="flex flex-col items-center gap-4 rounded-2xl border border-white/10 py-10 text-center"
           style={{ backgroundColor: 'rgba(255,255,255,0.02)' }}
           {...fadeUp(0.2)}
         >
           <p className="text-sm" style={{ color: '#888888' }}>
-            {isCompleted
-              ? 'You have completed this course. Ready to challenge yourself again?'
-              : isEnrolled
-              ? 'You\'re enrolled — head to the examination when ready.'
-              : 'Ready to commit to your own academic downfall?'}
+            Ready to test your knowledge against the world's most questionably rigorous curriculum?
           </p>
 
-          {!isEnrolled && !isCompleted && (
-            <button
-              type="button"
-              onClick={() => onEnroll(course.id)}
-              className="rounded-xl px-8 py-3 text-sm font-black uppercase tracking-widest transition-all hover:opacity-90 active:scale-95"
-              style={{ backgroundColor: '#C6FF00', color: '#090909' }}
-            >
-              Enrol Now — It's Free (emotionally it's not)
-            </button>
-          )}
-
-          {isEnrolled && !isCompleted && (
-            <Link
-              to={`/exam/${course.id}`}
-              className="rounded-xl px-8 py-3 text-sm font-black uppercase tracking-widest transition-all hover:opacity-90 active:scale-95"
-              style={{ backgroundColor: '#C6FF00', color: '#090909' }}
-            >
-              Begin Examination →
-            </Link>
-          )}
-
-          {isCompleted && (
-            <Link
-              to={`/exam/${course.id}`}
-              className="rounded-xl border px-8 py-3 text-sm font-bold uppercase tracking-widest transition-opacity hover:opacity-80"
-              style={{
-                borderColor: 'rgba(255,255,255,0.15)',
-                color: '#888888',
-              }}
-            >
-              Retake Examination
-            </Link>
-          )}
+          <Link
+            to={`/exam/${course.id}`}
+            className="rounded-xl px-8 py-3 text-sm font-black uppercase tracking-widest transition-all hover:bg-[#d4ff33] active:scale-95"
+            style={{ backgroundColor: '#C6FF00', color: '#090909' }}
+          >
+            Sit Exam for {course.code} →
+          </Link>
         </motion.div>
       </main>
     </div>

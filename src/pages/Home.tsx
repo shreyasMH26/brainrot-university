@@ -1,12 +1,14 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, useInView } from 'framer-motion';
-import { ArrowRight, ChevronRight, GraduationCap, BookOpen, Award } from 'lucide-react';
+import { ArrowRight, ChevronRight, BookOpen, Sparkles, Flame, Eye } from 'lucide-react';
 import CourseCard from '../components/CourseCard';
 import ProfessorCard from '../components/ProfessorCard';
 import { courses } from '../data/courses';
 import { professors } from '../data/professors';
 import type { StudentProfile } from '../types';
+import DotPattern from '@/components/ui/dot-pattern-1';
+import { Quote } from '@/components/ui/quote-demo';
 
 interface HomeProps {
   profile: StudentProfile | null;
@@ -48,7 +50,7 @@ const AnimatedCounter: React.FC<CounterProps> = ({ target, label, duration = 2 }
   return (
     <div ref={ref} className="text-center">
       <div className="text-5xl md:text-6xl font-black text-[#C6FF00] font-mono mb-2">
-        {display}{typeof target === 'string' && target.includes('%') ? '' : ''}
+        {display}
       </div>
       <div className="text-[#888888] text-sm uppercase tracking-widest">{label}</div>
     </div>
@@ -159,26 +161,27 @@ const GraduationSkull: React.FC = () => (
   </motion.svg>
 );
 
-// ─── Marquee ─────────────────────────────────────────────────────────────────
+// ─── Marquee with 2026 Memes ─────────────────────────────────────────────────
 const messages = [
-  'APPLICATIONS NOW OPEN FOR ADVANCED OVERTHINKING',
-  'PROFESSOR BRAINCELL HAS ENTERED THE BUILDING',
-  'DEADLINE EXTENSION DENIED (AGAIN)',
-  'ZERO GRASS HAS BEEN TOUCHED THIS SEMESTER',
-  'NEW COURSE: SKIBIDI LINGUISTICS NOW AVAILABLE',
-  'LIBRARY NOW STOCKS EMOTIONAL SUPPORT MEMES',
-  'FINALS WEEK SURVIVAL KITS: OUT OF STOCK',
+  'NO CAP: ALL COURSES ARE OPEN-ACCESS WITH ZERO APPLICATION REQUIRED',
+  'CURRENT AURA: +50,000 JUST FOR READING THE SYLLABUS',
+  'PROFESSOR BRAINCELL HIT THE SKIBIDI RIZZ QUANTUM BARRIER',
+  'LATEST RESEARCH: MAIN CHARACTER SYNDROME CURES BOREDOM',
+  'WARNING: RIZZ MECHANICS LAB REGISTERED SEVERE OHIO TAX DEBT',
+  'WE ARE SO COOKED · CHAT IS THIS REAL? · ABSOLUTE CINEMA',
+  'TOUCHING GRASS REMAINS STRONGLY DISCOURAGED BY DEAN',
+  '100% UNBOTHERED · MOISTURIZED · IN OUR UNACCREDITED LANE',
 ];
 
 const MarqueeSection: React.FC = () => {
   const text = messages.join('  ·  ');
 
   return (
-    <div className="bg-[#C6FF00] py-3 overflow-hidden">
+    <div className="bg-[#C6FF00] py-3 overflow-hidden select-none">
       <motion.div
         className="flex gap-0 whitespace-nowrap"
         animate={{ x: [0, '-50%'] }}
-        transition={{ duration: 30, repeat: Infinity, ease: 'linear' }}
+        transition={{ duration: 32, repeat: Infinity, ease: 'linear' }}
       >
         {[...Array(2)].map((_, i) => (
           <span key={i} className="text-[#090909] font-black text-sm tracking-widest uppercase px-8 shrink-0">
@@ -190,61 +193,58 @@ const MarqueeSection: React.FC = () => {
   );
 };
 
-// ─── Testimonials ─────────────────────────────────────────────────────────────
+// ─── Gen Z Meme Testimonials ──────────────────────────────────────────────────
 const testimonials = [
   {
-    quote: 'BU changed my life. I now overthink with academic rigour.',
-    name: 'Definitely Real Student',
-    dept: 'Class of Never',
+    quote: "Bro I went from 0 aura to certified Sigma Scholar in two modules. Chat, this website is absolute cinema.",
+    name: "Kai Cenat's Long Lost Roommate",
+    dept: "Dept. of Rizz Engineering",
   },
   {
-    quote: 'The procrastination course was so good I finished it a semester late.',
-    name: 'Person Who Exists',
-    dept: 'Dept. of Unproductive Sciences',
+    quote: "My parents asked what degree I was doing. I told them Quantum Overthinking 101. They asked if it's accredited. I hit them with 'it's giving unbothered'.",
+    name: "Terminal Delulu Specialist",
+    dept: "Dept. of Delusion Studies",
   },
   {
-    quote: 'My rizz coefficient increased by 3 sigmas. I have the certificate.',
-    name: 'Anonymous',
-    dept: 'Class of This Semester',
+    quote: "Didn't touch grass for 3 consecutive semesters. Learned the lore behind every TikTok sound effect. 10/10 academic excellence.",
+    name: "Subway Surfers Split-Screen Consumer",
+    dept: "Dept. of Unproductive Sciences",
   },
   {
-    quote: 'I touched grass once during the Grass Studies field trip. My character arc is complete.',
-    name: 'Student Number',
-    dept: 'Graduating Never',
+    quote: "Took the exam at 3 AM while watching family guy clips on bottom screen. Scored 96%. We are so back.",
+    name: "Dopamine Receptor Burnout PhD",
+    dept: "Dept. of Brainrot Technology",
   },
   {
-    quote: 'I enrolled ironically. I graduated sincerely. The brainrot runs deep.',
-    name: 'NPC #4291',
-    dept: 'Dept. of Questionable Life Choices',
+    quote: "No registration, no emails, no cap, no tuition debt. Just pure uncut intellectual damage.",
+    name: "Unspoken Rizz Pioneer",
+    dept: "Class of Never",
   },
 ];
 
 // ─── Hall of Fame Entries ─────────────────────────────────────────────────────
 const hallEntries = [
-  { rank: 1, name: 'Delulu Maximilian', score: 99420, achievement: 'First to achieve terminal brainrot' },
-  { rank: 2, name: 'Sigma Grindset McMahon', score: 88001, achievement: 'Perfect score in Skibidi Linguistics' },
-  { rank: 3, name: 'Professor NPC', score: 77777, achievement: 'Completed all courses simultaneously while sleeping' },
+  { rank: 1, name: 'Delulu Maximilian', score: 99420, achievement: 'Aura overflow: broke the integer ceiling' },
+  { rank: 2, name: 'Duke of Ohio Tax', score: 88001, achievement: 'Passed 26 courses with Subway Surfers playing on 2nd monitor' },
+  { rank: 3, name: 'Professor NPC The Third', score: 77777, achievement: 'Completed all courses simultaneously while sleeping' },
 ];
 
-// ─── Steps ────────────────────────────────────────────────────────────────────
-const steps = [
+// ─── Educational Manifesto ────────────────────────────────────────────────────
+const informationalFeatures = [
   {
-    number: '01',
-    title: 'Browse Courses',
-    desc: 'Pick something that sounds fun and vaguely destructive.',
     icon: <BookOpen size={24} />,
+    title: 'Open Syllabus Archive',
+    desc: 'Browse complete curricula from Advanced Overthinking to Quantum Rizz. No paywalls, no login popups.',
   },
   {
-    number: '02',
-    title: 'Take the Exam',
-    desc: 'Multiple choice questions designed to make you question everything.',
-    icon: <GraduationCap size={24} />,
+    icon: <Sparkles size={24} />,
+    title: 'Instant Question Hall',
+    desc: 'Interactive examination questionnaires grounded in real internet subcultures. Test your cognitive resilience.',
   },
   {
-    number: '03',
-    title: 'Collect Your Certificate',
-    desc: 'Download, print, confuse your family.',
-    icon: <Award size={24} />,
+    icon: <Flame size={24} />,
+    title: 'Zero Paperwork',
+    desc: 'No applications, no student loans, no admissions essays. Read, digest, and walk away with your aura intact.',
   },
 ];
 
@@ -254,18 +254,16 @@ const Home: React.FC<HomeProps> = ({ profile: _profile }) => {
     <main className="bg-[#090909] text-[#F0EBDD] overflow-x-hidden">
       {/* ── 1. HERO ──────────────────────────────────────────────────────── */}
       <section className="relative min-h-screen flex flex-col items-center justify-center px-6 pt-24 pb-16 overflow-hidden">
-        {/* Background grid */}
-        <div
-          className="absolute inset-0 opacity-[0.04]"
-          style={{
-            backgroundImage:
-              'linear-gradient(#C6FF00 1px, transparent 1px), linear-gradient(90deg, #C6FF00 1px, transparent 1px)',
-            backgroundSize: '60px 60px',
-          }}
+        {/* Dot Pattern Background from Shadcn UI component */}
+        <DotPattern
+          width={28}
+          height={28}
+          cr={1}
+          className="fill-[#C6FF00]/10 [mask-image:radial-gradient(ellipse_at_center,white_30%,transparent_80%)]"
         />
 
         {/* Glow blob */}
-        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[400px] rounded-full bg-[#C6FF00] opacity-[0.04] blur-[120px] pointer-events-none" />
+        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[400px] rounded-full bg-[#C6FF00] opacity-[0.05] blur-[140px] pointer-events-none" />
 
         <div className="relative z-10 max-w-6xl mx-auto w-full grid lg:grid-cols-2 gap-12 items-center">
           {/* Left column */}
@@ -274,9 +272,9 @@ const Home: React.FC<HomeProps> = ({ profile: _profile }) => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
-              className="text-[#C6FF00] text-xs font-black tracking-[0.35em] uppercase mb-6"
+              className="text-[#C6FF00] text-xs font-black tracking-[0.35em] uppercase mb-6 flex items-center gap-2"
             >
-              EST. NEVER · ACCREDITED BY NOBODY
+              <Eye size={14} /> PUBLIC CURRICULUM ARCHIVE · NO LOGIN REQUIRED
             </motion.p>
 
             <motion.h1
@@ -284,7 +282,7 @@ const Home: React.FC<HomeProps> = ({ profile: _profile }) => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
               className="font-black uppercase leading-[0.9] mb-8"
-              style={{ fontSize: 'clamp(3rem, 8vw, 7rem)' }}
+              style={{ fontSize: 'clamp(2.8rem, 7.5vw, 6.5rem)' }}
             >
               WELCOME TO
               <br />
@@ -299,7 +297,7 @@ const Home: React.FC<HomeProps> = ({ profile: _profile }) => {
               transition={{ duration: 0.7, delay: 0.3 }}
               className="text-[#888888] text-lg leading-relaxed mb-10 max-w-lg"
             >
-              Four years of questionable decisions. Unlimited academic damage. One degree your parents will never understand.
+              The world's most unserious open-access compendium. 26 satirical courses, comprehensive syllabi, and interactive evaluations. No accounts, no fees, maximum aura.
             </motion.p>
 
             <motion.div
@@ -310,13 +308,13 @@ const Home: React.FC<HomeProps> = ({ profile: _profile }) => {
             >
               <Link
                 to="/courses"
-                className="inline-flex items-center gap-2 bg-[#C6FF00] text-[#090909] font-black text-sm tracking-widest uppercase px-8 py-4 hover:bg-white transition-colors duration-200"
+                className="inline-flex items-center gap-2 bg-[#C6FF00] text-[#090909] font-black text-sm tracking-widest uppercase px-8 py-4 hover:bg-white transition-colors duration-200 rounded-sm shadow-[0_0_30px_rgba(198,255,0,0.25)]"
               >
-                ENROLL NOW <ArrowRight size={16} />
+                BROWSE COURSES <ArrowRight size={16} />
               </Link>
               <Link
-                to="/courses"
-                className="inline-flex items-center gap-2 border border-[#F0EBDD]/30 text-[#F0EBDD] font-black text-sm tracking-widest uppercase px-8 py-4 hover:border-[#C6FF00] hover:text-[#C6FF00] transition-colors duration-200"
+                to="/departments"
+                className="inline-flex items-center gap-2 border border-[#F0EBDD]/30 text-[#F0EBDD] font-black text-sm tracking-widest uppercase px-8 py-4 hover:border-[#C6FF00] hover:text-[#C6FF00] transition-colors duration-200 rounded-sm"
               >
                 EXPLORE DEPARTMENTS
               </Link>
@@ -340,39 +338,68 @@ const Home: React.FC<HomeProps> = ({ profile: _profile }) => {
           <AnimatedCounter target={0} label="Successful Grass-Touching Attempts" />
           <AnimatedCounter target="100%" label="Unnecessary Confidence" />
         </motion.div>
-
-        <motion.p
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.6, delay: 1.2 }}
-          className="relative z-10 text-[#888888] text-xs mt-6 text-center"
-        >
-          * These statistics are entirely fictional and for entertainment purposes only
-        </motion.p>
       </section>
 
-      {/* ── 2. MARQUEE ───────────────────────────────────────────────────── */}
+      {/* ── 2. TICKER ────────────────────────────────────────────────────── */}
       <MarqueeSection />
 
-      {/* ── 3. FEATURED COURSES ──────────────────────────────────────────── */}
+      {/* ── 3. SHADCN UI INTEGRATED QUOTE COMPONENT ──────────────────────── */}
+      <section className="py-20 px-6">
+        <Quote />
+      </section>
+
+      {/* ── 4. HOW THIS KNOWLEDGE BASE WORKS ──────────────────────────────── */}
+      <section className="py-20 px-6 bg-[#0c0c0c] border-y border-white/5">
+        <div className="max-w-5xl mx-auto">
+          <Reveal>
+            <div className="text-center mb-16">
+              <p className="text-[#C6FF00] text-xs font-black tracking-[0.3em] uppercase mb-3">
+                OPEN DIRECTORY
+              </p>
+              <h2 className="font-black uppercase text-4xl md:text-5xl leading-none">
+                HOW THIS REPOSITORY OPERATES
+              </h2>
+              <p className="text-[#888888] text-sm mt-3 max-w-lg mx-auto">
+                No passwords to forget. No admission quotas. Just unfiltered academic comedy.
+              </p>
+            </div>
+          </Reveal>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {informationalFeatures.map((feat, i) => (
+              <Reveal key={feat.title} delay={i * 0.1}>
+                <div className="bg-[#090909] border border-white/10 p-8 rounded-xl flex flex-col gap-4 hover:border-[#C6FF00]/40 transition-colors">
+                  <div className="w-12 h-12 bg-[#C6FF00]/10 border border-[#C6FF00]/30 text-[#C6FF00] flex items-center justify-center rounded-lg">
+                    {feat.icon}
+                  </div>
+                  <h3 className="font-black uppercase text-xl text-[#F0EBDD]">{feat.title}</h3>
+                  <p className="text-sm text-[#888888] leading-relaxed">{feat.desc}</p>
+                </div>
+              </Reveal>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── 5. FEATURED COURSES ──────────────────────────────────────────── */}
       <section className="py-24 px-6">
         <div className="max-w-7xl mx-auto">
           <Reveal>
             <div className="flex flex-col md:flex-row md:items-end md:justify-between mb-14 gap-4">
               <div>
                 <p className="text-[#C6FF00] text-xs font-black tracking-[0.3em] uppercase mb-3">
-                  CURRICULUM
+                  CURRICULUM ARCHIVE
                 </p>
                 <h2 className="font-black uppercase text-5xl md:text-6xl leading-none">
                   COURSES OF<br />
-                  <span className="text-[#C6FF00]">DUBIOUS</span> QUALITY
+                  <span className="text-[#C6FF00]">QUESTIONABLE</span> VALUE
                 </h2>
               </div>
               <Link
                 to="/courses"
                 className="inline-flex items-center gap-2 text-[#C6FF00] font-black text-sm tracking-widest uppercase border border-[#C6FF00]/30 px-6 py-3 hover:bg-[#C6FF00] hover:text-[#090909] transition-colors duration-200 self-start"
               >
-                VIEW ALL COURSES <ChevronRight size={16} />
+                VIEW FULL CATALOGUE <ChevronRight size={16} />
               </Link>
             </div>
           </Reveal>
@@ -387,17 +414,17 @@ const Home: React.FC<HomeProps> = ({ profile: _profile }) => {
         </div>
       </section>
 
-      {/* ── 4. FACULTY ───────────────────────────────────────────────────── */}
+      {/* ── 6. FACULTY ───────────────────────────────────────────────────── */}
       <section className="py-24 px-6 bg-[#0e0e0e]">
         <div className="max-w-7xl mx-auto">
           <Reveal>
             <div className="mb-14">
               <p className="text-[#C6FF00] text-xs font-black tracking-[0.3em] uppercase mb-3">
-                STAFF
+                STAFF DIRECTORY
               </p>
               <h2 className="font-black uppercase text-5xl md:text-6xl leading-none">
                 MEET THE FACULTY<br />
-                <span className="text-[#888888]">(FICTIONAL)</span>
+                <span className="text-[#888888]">(ALL FICTIONAL)</span>
               </h2>
             </div>
           </Reveal>
@@ -412,51 +439,16 @@ const Home: React.FC<HomeProps> = ({ profile: _profile }) => {
         </div>
       </section>
 
-      {/* ── 5. HOW ENROLLMENT WORKS ──────────────────────────────────────── */}
-      <section className="py-24 px-6">
-        <div className="max-w-5xl mx-auto">
-          <Reveal>
-            <div className="mb-16 text-center">
-              <p className="text-[#C6FF00] text-xs font-black tracking-[0.3em] uppercase mb-3">
-                PROCESS
-              </p>
-              <h2 className="font-black uppercase text-5xl md:text-6xl leading-none">
-                HOW ENROLLMENT<br />WORKS
-              </h2>
-            </div>
-          </Reveal>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
-            {steps.map((step, i) => (
-              <Reveal key={step.number} delay={i * 0.12}>
-                <div className="relative">
-                  <div className="text-[#C6FF00]/10 font-black text-[8rem] leading-none absolute -top-4 -left-2 select-none pointer-events-none">
-                    {step.number}
-                  </div>
-                  <div className="relative z-10 pt-10">
-                    <div className="w-12 h-12 border border-[#C6FF00]/40 flex items-center justify-center text-[#C6FF00] mb-5">
-                      {step.icon}
-                    </div>
-                    <h3 className="font-black uppercase text-xl mb-3">{step.title}</h3>
-                    <p className="text-[#888888] leading-relaxed">{step.desc}</p>
-                  </div>
-                </div>
-              </Reveal>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── 6. TESTIMONIALS ──────────────────────────────────────────────── */}
-      <section className="py-24 px-6 bg-[#0e0e0e]">
+      {/* ── 7. MEME TESTIMONIALS ─────────────────────────────────────────── */}
+      <section className="py-24 px-6 bg-[#090909] border-t border-white/5">
         <div className="max-w-7xl mx-auto">
           <Reveal>
             <div className="mb-14">
               <p className="text-[#C6FF00] text-xs font-black tracking-[0.3em] uppercase mb-3">
-                SOCIAL PROOF
+                FEEDBACK & LORE
               </p>
               <h2 className="font-black uppercase text-5xl md:text-6xl leading-none">
-                WHAT OUR<br />
+                WHAT CHRONICALLY ONLINE<br />
                 <span className="text-[#C6FF00]">STUDENTS</span> SAY
               </h2>
             </div>
@@ -465,9 +457,9 @@ const Home: React.FC<HomeProps> = ({ profile: _profile }) => {
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
             {testimonials.map((t, i) => (
               <Reveal key={i} delay={i * 0.08}>
-                <div className="border border-[#F0EBDD]/10 p-8 hover:border-[#C6FF00]/30 transition-colors duration-300 flex flex-col gap-6">
+                <div className="border border-[#F0EBDD]/10 bg-[#0c0c0c] p-8 hover:border-[#C6FF00]/30 transition-colors duration-300 flex flex-col gap-6 rounded-xl">
                   <p className="text-[#C6FF00] text-[10px] font-black tracking-widest uppercase opacity-60">
-                    [FICTIONAL STUDENT TESTIMONIAL]
+                    [FICTIONAL ARCHIVAL QUOTE]
                   </p>
                   <p className="text-[#F0EBDD] text-lg leading-relaxed font-medium italic flex-1">
                     "{t.quote}"
@@ -483,14 +475,14 @@ const Home: React.FC<HomeProps> = ({ profile: _profile }) => {
         </div>
       </section>
 
-      {/* ── 7. HALL OF FAME PREVIEW ──────────────────────────────────────── */}
-      <section className="py-24 px-6">
+      {/* ── 8. HALL OF FAME PREVIEW ──────────────────────────────────────── */}
+      <section className="py-24 px-6 bg-[#0c0c0c]">
         <div className="max-w-5xl mx-auto">
           <Reveal>
             <div className="flex flex-col md:flex-row md:items-end md:justify-between mb-14 gap-4">
               <div>
                 <p className="text-[#C6FF00] text-xs font-black tracking-[0.3em] uppercase mb-3">
-                  RANKINGS
+                  AURA LEADERS
                 </p>
                 <h2 className="font-black uppercase text-5xl md:text-6xl leading-none">
                   HALL OF SHAME<br />
@@ -501,15 +493,15 @@ const Home: React.FC<HomeProps> = ({ profile: _profile }) => {
                 to="/hall-of-fame"
                 className="inline-flex items-center gap-2 text-[#C6FF00] font-black text-sm tracking-widest uppercase border border-[#C6FF00]/30 px-6 py-3 hover:bg-[#C6FF00] hover:text-[#090909] transition-colors duration-200 self-start"
               >
-                FULL LEADERBOARD <ChevronRight size={16} />
+                VIEW ARCHIVE <ChevronRight size={16} />
               </Link>
             </div>
           </Reveal>
 
           <div className="flex flex-col gap-3">
-            {hallEntries.map((entry, i) => (
-              <Reveal key={entry.rank} delay={i * 0.08}>
-                <div className="border border-[#F0EBDD]/10 p-6 flex items-center gap-6 hover:border-[#C6FF00]/30 transition-colors duration-300">
+            {hallEntries.map((entry) => (
+              <Reveal key={entry.rank} delay={entry.rank * 0.08}>
+                <div className="border border-[#F0EBDD]/10 bg-[#090909] p-6 flex items-center gap-6 hover:border-[#C6FF00]/30 transition-colors duration-300 rounded-xl">
                   <span className="text-[#C6FF00] font-black text-3xl font-mono w-12 shrink-0">
                     #{entry.rank}
                   </span>
@@ -521,7 +513,7 @@ const Home: React.FC<HomeProps> = ({ profile: _profile }) => {
                     <p className="text-[#C6FF00] font-black text-xl font-mono">
                       {entry.score.toLocaleString()}
                     </p>
-                    <p className="text-[#888888] text-xs uppercase tracking-widest mt-1">BRAINROT SCORE</p>
+                    <p className="text-[#888888] text-xs uppercase tracking-widest mt-1">AURA SCORE</p>
                   </div>
                 </div>
               </Reveal>
@@ -530,33 +522,30 @@ const Home: React.FC<HomeProps> = ({ profile: _profile }) => {
         </div>
       </section>
 
-      {/* ── 8. FINAL CTA ─────────────────────────────────────────────────── */}
-      <section className="py-32 px-6 bg-[#C6FF00] relative overflow-hidden">
-        <div
-          className="absolute inset-0 opacity-10"
-          style={{
-            backgroundImage:
-              'linear-gradient(#090909 1px, transparent 1px), linear-gradient(90deg, #090909 1px, transparent 1px)',
-            backgroundSize: '40px 40px',
-          }}
+      {/* ── 9. BOTTOM EXPLORATION BANNER ─────────────────────────────────── */}
+      <section className="py-28 px-6 bg-[#C6FF00] relative overflow-hidden">
+        <DotPattern
+          width={16}
+          height={16}
+          cr={1}
+          className="fill-[#090909]/20"
         />
         <Reveal className="relative z-10 max-w-4xl mx-auto text-center">
           <h2
-            className="font-black uppercase text-[#090909] leading-[0.9] mb-10"
-            style={{ fontSize: 'clamp(2.5rem, 7vw, 5.5rem)' }}
+            className="font-black uppercase text-[#090909] leading-[0.9] mb-8"
+            style={{ fontSize: 'clamp(2.2rem, 6vw, 4.8rem)' }}
           >
-            READY TO DAMAGE YOUR<br />ACADEMIC RECORD?
+            READY TO EXPLORE THE CURRICULUM?
           </h2>
+          <p className="text-[#090909]/80 text-base max-w-xl mx-auto mb-8 font-medium">
+            No signup. No tuition. No applications. Just the most thoroughly unserious syllabus on the internet.
+          </p>
           <Link
             to="/courses"
-            className="inline-flex items-center gap-3 bg-[#090909] text-[#C6FF00] font-black text-sm tracking-widest uppercase px-12 py-5 hover:bg-[#641C2B] transition-colors duration-200"
+            className="inline-flex items-center gap-3 bg-[#090909] text-[#C6FF00] font-black text-sm tracking-widest uppercase px-10 py-4 hover:bg-[#641C2B] hover:text-[#F0EBDD] transition-colors duration-200 rounded-sm"
           >
-            APPLY NOW <ArrowRight size={18} />
+            EXPLORE ALL 26 COURSES <ArrowRight size={18} />
           </Link>
-          <p className="text-[#090909]/50 text-xs mt-8 max-w-md mx-auto leading-relaxed">
-            * Brainrot University is a fictional, satirical platform for entertainment only.
-            No actual degrees, credits, or academic standing are conferred. Results (fictional) may vary.
-          </p>
         </Reveal>
       </section>
     </main>

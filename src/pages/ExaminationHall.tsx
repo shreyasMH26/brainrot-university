@@ -52,10 +52,6 @@ const ExaminationHall: React.FC<Props> = ({ profile, onSubmitResult }) => {
   const [questionTimings, setQuestionTimings] = useState<number[]>([]);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  const isEnrolled = profile && courseId
-    ? (profile.enrolledCourses ?? []).includes(courseId)
-    : false;
-
   const alreadyCompleted = profile && courseId
     ? (profile.completedCourses ?? []).includes(courseId)
     : false;
@@ -146,7 +142,7 @@ const ExaminationHall: React.FC<Props> = ({ profile, onSubmitResult }) => {
   };
 
   const submitExam = () => {
-    if (!quiz || !course || !profile || !startTime) return;
+    if (!quiz || !course || !startTime) return;
 
     const quizDurationMs = Date.now() - startTime.getTime();
     const avgQuestionTimeMs =
@@ -205,56 +201,7 @@ const ExaminationHall: React.FC<Props> = ({ profile, onSubmitResult }) => {
     );
   }
 
-  // ─── Guard: no profile ────────────────────────────────────────────────
-  if (!profile) {
-    return (
-      <div className="min-h-screen bg-[#090909] flex items-center justify-center">
-        <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          className="text-center space-y-4 max-w-md px-8"
-        >
-          <AlertTriangle className="w-16 h-16 text-yellow-400 mx-auto" />
-          <h1 className="text-2xl font-bold text-[#F0EBDD]">Identity Required</h1>
-          <p className="text-[#888888]">
-            You need a student profile to sit an examination.
-          </p>
-          <Link
-            to="/portal"
-            className="inline-block bg-[#C6FF00] text-[#090909] font-bold px-6 py-3 rounded-lg hover:opacity-90 transition"
-          >
-            Go to Student Portal
-          </Link>
-        </motion.div>
-      </div>
-    );
-  }
-
-  // ─── Guard: not enrolled ──────────────────────────────────────────────
-  if (!isEnrolled) {
-    return (
-      <div className="min-h-screen bg-[#090909] flex items-center justify-center">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="text-center space-y-4 max-w-md px-8"
-        >
-          <BookOpen className="w-16 h-16 text-[#C6FF00] mx-auto" />
-          <h1 className="text-2xl font-bold text-[#F0EBDD]">Enrollment Required</h1>
-          <p className="text-[#888888]">
-            You must enroll in <span className="text-[#F0EBDD] font-semibold">{course.title}</span> before
-            you can sit the exam.
-          </p>
-          <Link
-            to={`/courses/${courseId}`}
-            className="inline-block bg-[#C6FF00] text-[#090909] font-bold px-6 py-3 rounded-lg hover:opacity-90 transition"
-          >
-            Enroll Now
-          </Link>
-        </motion.div>
-      </div>
-    );
-  }
+  // Everyone is free to take the exam - zero apply or registration barriers!
 
   // ─── Guard: already completed ─────────────────────────────────────────
   if (alreadyCompleted && step === 'pre' && !retakeMode) {

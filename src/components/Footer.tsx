@@ -28,7 +28,7 @@ const QUICK_LINKS = [
   { label: 'Exam Hall', to: '/examination-hall' },
   { label: 'Hall of Fame', to: '/hall-of-fame' },
   { label: 'Faculty', to: '/faculty' },
-  { label: 'Student Portal', to: '/student-portal' },
+  { label: 'Departments', to: '/departments' },
 ];
 
 function Ticker() {
@@ -123,13 +123,8 @@ export default function Footer() {
               ))}
             </ul>
 
-            <div className="mt-6">
-              <Link
-                to="/apply"
-                className="inline-block px-5 py-2 rounded text-sm font-bold text-[#090909] bg-[#C6FF00] hover:bg-[#d4ff33] transition-colors"
-              >
-                Apply Now →
-              </Link>
+            <div className="mt-6 text-xs text-[#888888] font-mono">
+              STATUS: ARCHIVE ONLY · ZERO REGISTRATION REQUIRED
             </div>
           </div>
         </div>
