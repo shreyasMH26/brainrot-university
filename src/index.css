@@ -1,5 +1,10 @@
 @import "tailwindcss";
 
+:root {
+  --font-heading: 'HelveticaNowDisplay-Medium', 'Helvetica Neue', Arial, sans-serif;
+  --font-body: 'HelveticaNowDisplayW01-Rg', 'Helvetica Neue', Arial, sans-serif;
+}
+
 @theme {
   --color-obsidian: #090909;
   --color-paper: #F0EBDD;
@@ -9,7 +14,8 @@
   --color-paper-dark: #E0D9C8;
   --color-acid-dark: #A8D900;
 
-  --font-sans: Inter, system-ui, sans-serif;
+  --font-heading: var(--font-heading);
+  --font-sans: var(--font-body);
   --font-serif: Georgia, "Times New Roman", serif;
   --font-mono: "JetBrains Mono", "Courier New", monospace;
 
@@ -85,7 +91,7 @@ html {
 body {
   background-color: #090909;
   color: #F0EBDD;
-  font-family: Inter, system-ui, sans-serif;
+  font-family: var(--font-body);
   margin: 0;
   padding: 0;
   -webkit-font-smoothing: antialiased;

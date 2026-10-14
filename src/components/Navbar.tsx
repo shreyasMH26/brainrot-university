@@ -1,7 +1,5 @@
-import { useState, useCallback } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X } from 'lucide-react';
 import type { StudentProfile } from '../types';
 
 interface NavbarProps {
@@ -10,10 +8,9 @@ interface NavbarProps {
 }
 
 const NAV_LINKS = [
-  { label: 'Home', to: '/' },
   { label: 'Departments', to: '/departments' },
   { label: 'Courses', to: '/courses' },
-  { label: 'Examination Hall', to: '/examination-hall' },
+  { label: 'Examinations', to: '/examination-hall' },
   { label: 'Hall of Fame', to: '/hall-of-fame' },
   { label: 'Faculty', to: '/faculty' },
 ];
@@ -23,6 +20,7 @@ export default function Navbar({ onCrestClick, profile: _profile }: NavbarProps)
   const [clickCount, setClickCount] = useState(0);
   const location = useLocation();
 
+  // Crest click easter egg (7 clicks)
   const handleLogoClick = useCallback(() => {
     const next = clickCount + 1;
     setClickCount(next);
@@ -32,116 +30,148 @@ export default function Navbar({ onCrestClick, profile: _profile }: NavbarProps)
     }
   }, [clickCount, onCrestClick]);
 
-  const isActive = (to: string) =>
-    to === '/' ? location.pathname === '/' : location.pathname.startsWith(to);
+  // Close mobile nav on route change
+  useEffect(() => {
+    setMobileOpen(false);
+  }, [location.pathname]);
+
+  // Lock body scroll and handle Escape key when mobile menu is open
+  useEffect(() => {
+    if (mobileOpen) {
+      document.body.style.overflow = 'hidden';
+      const handleKeyDown = (e: KeyboardEvent) => {
+        if (e.key === 'Escape') {
+          setMobileOpen(false);
+        }
+      };
+      window.addEventListener('keydown', handleKeyDown);
+      return () => {
+        document.body.style.overflow = '';
+        window.removeEventListener('keydown', handleKeyDown);
+      };
+    } else {
+      document.body.style.overflow = '';
+    }
+  }, [mobileOpen]);
 
   return (
-    <motion.nav
-      initial={{ y: -80, opacity: 0 }}
-      animate={{ y: 0, opacity: 1 }}
-      transition={{ duration: 0.5, ease: 'easeOut' }}
-      className="sticky top-0 z-50 w-full"
-      style={{
-        backgroundColor: '#090909',
-        borderBottom: '1px solid rgba(240,235,221,0.1)',
-      }}
-    >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16 gap-4">
-          {/* Logo */}
-          <button
-            onClick={handleLogoClick}
-            className="flex flex-col items-start leading-tight select-none cursor-pointer focus:outline-none shrink-0"
-            aria-label="Brainrot University Logo"
-          >
-            <span className="text-xl font-extrabold uppercase tracking-widest text-[#C6FF00]">
-              ☠️ BRAINROT UNIVERSITY
-            </span>
-            <span className="text-[10px] tracking-[0.2em] uppercase text-[#888888]">
-              EST. NEVER · UNACCREDITED
-            </span>
-          </button>
+    <>
+      <header
+        className="fixed top-0 left-0 right-0 w-full px-5 sm:px-8 py-4 sm:py-5 flex items-center justify-between pointer-events-auto bg-[#090909]/40 backdrop-blur-md border-b border-white/5 transition-all"
+        style={{ zIndex: 50 }}
+      >
+        {/* Brand / Wordmark */}
+        <Link
+          to="/"
+          onClick={handleLogoClick}
+          className="font-heading text-[21px] sm:text-[26px] tracking-tight text-white font-medium hover:opacity-80 transition-opacity select-none focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-white/40"
+          aria-label="Brainrot University Home"
+        >
+          BRAINROT UNIVERSITY ✳︎
+        </Link>
 
-          {/* Desktop Nav Links */}
-          <div className="hidden lg:flex items-center gap-1 flex-1 justify-center">
+        {/* Desktop Comma-separated Navigation Links */}
+        <nav
+          className="hidden md:flex items-center text-[13px] tracking-wide text-white/90 font-light"
+          aria-label="Main Navigation"
+        >
+          {NAV_LINKS.map((link, idx) => (
+            <span key={link.to} className="inline-flex items-center">
+              <Link
+                to={link.to}
+                className={`transition-colors duration-200 ${
+                  location.pathname === link.to
+                    ? 'text-white font-medium underline underline-offset-4 decoration-white/60'
+                    : 'text-white/80 hover:text-white'
+                }`}
+              >
+                {link.label}
+              </Link>
+              {idx < NAV_LINKS.length - 1 && (
+                <span className="text-white/35 mr-1 sm:mr-1.5 ml-0.5">,</span>
+              )}
+            </span>
+          ))}
+        </nav>
+
+        {/* Desktop Enroll CTA */}
+        <div className="hidden md:flex items-center">
+          <Link
+            to="/portal"
+            className="text-[13px] tracking-wide text-white underline underline-offset-4 hover:opacity-70 transition-opacity font-medium"
+          >
+            Enroll now
+          </Link>
+        </div>
+
+        {/* Mobile Hamburger Button (morphing 3 bars into X) */}
+        <button
+          type="button"
+          onClick={() => setMobileOpen((prev) => !prev)}
+          className="md:hidden relative w-8 h-8 flex flex-col justify-center items-center gap-1.5 focus:outline-none focus-visible:ring-1 focus-visible:ring-white p-1"
+          aria-label={mobileOpen ? 'Close navigation' : 'Open navigation'}
+          aria-expanded={mobileOpen}
+        >
+          <span
+            className={`block w-6 h-[1.5px] bg-white transition-all duration-300 ease-in-out ${
+              mobileOpen ? 'rotate-45 translate-y-[7.5px]' : ''
+            }`}
+          />
+          <span
+            className={`block w-6 h-[1.5px] bg-white transition-all duration-200 ease-in-out ${
+              mobileOpen ? 'opacity-0 scale-x-0' : 'opacity-100'
+            }`}
+          />
+          <span
+            className={`block w-6 h-[1.5px] bg-white transition-all duration-300 ease-in-out ${
+              mobileOpen ? '-rotate-45 -translate-y-[7.5px]' : ''
+            }`}
+          />
+        </button>
+      </header>
+
+      {/* Mobile Full-Screen Overlay */}
+      {mobileOpen && (
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-label="Mobile Navigation"
+          className="fixed inset-0 w-full h-full bg-[rgba(9,9,9,0.95)] backdrop-blur-2xl flex flex-col justify-between px-8 py-24 md:hidden transition-opacity"
+          style={{ zIndex: 40 }}
+        >
+          <div className="flex flex-col space-y-6 mt-8">
+            <span className="text-[11px] font-mono tracking-widest text-white/40 uppercase">
+              Academic Index
+            </span>
             {NAV_LINKS.map((link) => (
               <Link
                 key={link.to}
                 to={link.to}
-                className={`px-3 py-1.5 rounded text-sm font-medium transition-colors duration-150 whitespace-nowrap ${
-                  isActive(link.to)
-                    ? 'text-[#C6FF00]'
-                    : 'text-[#F0EBDD] hover:text-[#C6FF00]'
+                onClick={() => setMobileOpen(false)}
+                className={`text-2xl font-heading tracking-tight transition-colors ${
+                  location.pathname === link.to ? 'text-white font-semibold' : 'text-white/70 hover:text-white'
                 }`}
               >
                 {link.label}
               </Link>
             ))}
-          </div>
-
-          {/* Right side information badge */}
-          <div className="hidden lg:flex items-center gap-3 shrink-0">
-            <span className="text-xs font-mono font-bold text-[#090909] bg-[#C6FF00] px-3 py-1.5 rounded-full uppercase tracking-widest">
-              Unserious Archive
-            </span>
-            <Link
-              to="/courses"
-              className="px-4 py-2 rounded text-sm font-bold text-[#F0EBDD] bg-[#641C2B] hover:bg-[#7a2234] transition-colors duration-150"
-            >
-              Course Compendium
-            </Link>
-          </div>
-
-          {/* Mobile hamburger */}
-          <button
-            className="lg:hidden text-[#F0EBDD] hover:text-[#C6FF00] transition-colors p-1"
-            onClick={() => setMobileOpen((v) => !v)}
-            aria-label="Toggle menu"
-          >
-            {mobileOpen ? <X size={24} /> : <Menu size={24} />}
-          </button>
-        </div>
-      </div>
-
-      {/* Mobile Menu */}
-      <AnimatePresence>
-        {mobileOpen && (
-          <motion.div
-            key="mobile-menu"
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: 'auto', opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.25, ease: 'easeInOut' }}
-            className="overflow-hidden lg:hidden"
-            style={{ backgroundColor: '#090909', borderTop: '1px solid rgba(240,235,221,0.1)' }}
-          >
-            <div className="flex flex-col px-4 py-4 gap-1">
-              {NAV_LINKS.map((link) => (
-                <Link
-                  key={link.to}
-                  to={link.to}
-                  onClick={() => setMobileOpen(false)}
-                  className={`px-3 py-2 rounded text-sm font-medium transition-colors ${
-                    isActive(link.to)
-                      ? 'text-[#C6FF00] bg-[#C6FF00]/10'
-                      : 'text-[#F0EBDD] hover:text-[#C6FF00] hover:bg-white/5'
-                  }`}
-                >
-                  {link.label}
-                </Link>
-              ))}
-              <div className="border-t border-white/10 my-2" />
+            <div className="pt-4 border-t border-white/10">
               <Link
-                to="/courses"
+                to="/portal"
                 onClick={() => setMobileOpen(false)}
-                className="px-3 py-2 rounded text-sm font-bold text-center text-[#090909] bg-[#C6FF00] hover:bg-[#d4ff33] transition-colors"
+                className="inline-block text-lg font-medium text-white underline underline-offset-8 hover:opacity-75 transition-opacity"
               >
-                Explore Courses
+                Enroll now →
               </Link>
             </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </motion.nav>
+          </div>
+
+          <div className="text-xs text-white/40 flex justify-between tracking-wider font-mono">
+            <span>EST. NEVER</span>
+            <span>UNACCREDITED</span>
+          </div>
+        </div>
+      )}
+    </>
   );
 }
