@@ -1,5 +1,4 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import {
   Award,
@@ -7,8 +6,6 @@ import {
   GraduationCap,
   Trophy,
   AlertTriangle,
-  RotateCcw,
-  ArrowRight,
   ExternalLink,
 } from 'lucide-react';
 import type { StudentProfile, Certificate as CertificateType } from '../types';
@@ -64,47 +61,48 @@ export default function StudentPortal({
   // ─────────────────────────────────────────────────────────────
   if (!profile) {
     return (
-      <div className="min-h-screen bg-[#090909] text-[#F0EBDD] flex items-center justify-center px-4 py-16">
+      <div className="min-h-screen bg-[#090909] text-white flex items-center justify-center px-6 pt-28 pb-20">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
-          className="max-w-md w-full bg-[#0f0f0f] border border-[#F0EBDD]/10 rounded-2xl p-8 text-center space-y-6 shadow-2xl"
+          className="max-w-md w-full bg-[#111111]/90 border border-white/10 rounded-3xl p-8 text-center space-y-6 shadow-2xl"
         >
           <div className="space-y-2">
-            <span className="text-5xl">☠️</span>
-            <h1 className="text-2xl font-black text-[#F0EBDD] uppercase tracking-wide">
-              STUDENT ENROLLMENT PORTAL
+            <span className="text-4xl">☠️</span>
+            <h1 className="font-heading text-2xl font-medium text-white uppercase tracking-tight">
+              STUDENT IDENTITY REGISTRATION
             </h1>
-            <p className="text-xs text-[#888888]">
+            <p className="text-xs text-white/50 font-light">
               Begin your path to comprehensive academic downfall.
             </p>
           </div>
 
           <form onSubmit={handleCreateSubmit} className="space-y-4 text-left">
             <div>
-              <label className="block text-xs font-bold uppercase tracking-widest text-[#888888] mb-1">
-                Student Name / Alias
+              <label className="block text-[11px] font-mono uppercase tracking-widest text-white/40 mb-2">
+                Scholar Alias / Real Name
               </label>
               <input
                 type="text"
                 value={nameInput}
                 onChange={(e) => setNameInput(e.target.value)}
                 placeholder="e.g. Delulu Dave or Queen of Procrastination"
-                className="w-full bg-[#090909] border border-[#F0EBDD]/20 rounded-lg px-4 py-3 text-sm text-[#F0EBDD] placeholder-[#888888]/60 focus:outline-none focus:border-[#C6FF00]"
+                className="w-full bg-white/5 border border-white/10 rounded-full px-5 py-3 text-xs sm:text-sm text-white placeholder-white/30 focus:outline-none focus:border-white/40 font-mono"
                 required
               />
             </div>
 
             <button
               type="submit"
-              className="w-full bg-[#C6FF00] text-[#090909] font-black py-3 rounded-lg text-sm tracking-wide uppercase hover:bg-[#d4ff33] active:scale-95 transition"
+              className="w-full bg-white text-black font-medium py-3 rounded-full text-xs sm:text-sm tracking-wide uppercase hover:bg-white/85 active:scale-[0.98] transition shadow-md"
             >
-              GENERATE STUDENT ID & ENROLL
+              Generate Student ID & Begin
             </button>
           </form>
 
-          <p className="text-[10px] text-[#888888]/80 leading-relaxed border-t border-[#F0EBDD]/5 pt-4">
-            Notice: All records, titles, and IDs are purely fictional and saved locally in your browser. No personal data leaves this device.
+          <p className="text-[10px] text-white/40 font-mono leading-relaxed border-t border-white/5 pt-4">
+            Notice: All records, titles, and IDs are purely fictional and saved locally in your browser.
+            No personal data leaves this device.
           </p>
         </motion.div>
       </div>
@@ -123,48 +121,50 @@ export default function StudentPortal({
   });
 
   return (
-    <div className="min-h-screen bg-[#090909] text-[#F0EBDD] px-4 py-12 md:py-20">
+    <div className="min-h-screen bg-[#090909] text-white pt-28 sm:pt-32 pb-24 px-6">
       <div className="max-w-5xl mx-auto space-y-12">
         {/* Header / ID Card Section */}
         <div className="grid md:grid-cols-3 gap-6 items-start">
           {/* Virtual Student ID Card */}
-          <div className="md:col-span-1 bg-[#F0EBDD] text-[#090909] rounded-2xl p-6 border-4 border-[#641C2B] shadow-2xl relative overflow-hidden flex flex-col justify-between aspect-[1.58/1]">
+          <div className="md:col-span-1 bg-[#121212] text-white rounded-3xl p-6 border border-white/20 shadow-2xl relative overflow-hidden flex flex-col justify-between aspect-[1.58/1]">
             <div className="flex justify-between items-start">
               <div>
-                <span className="text-[9px] font-black tracking-widest text-[#641C2B] uppercase block">
-                  BRAINROT UNIVERSITY
+                <span className="text-[9px] font-mono tracking-widest text-[#C6FF00] uppercase block">
+                  BRAINROT UNIVERSITY ✳︎
                 </span>
-                <span className="text-[8px] text-[#090909]/60 font-mono">STUDENT IDENTITY CARD</span>
+                <span className="text-[8px] text-white/40 font-mono">OFFICIAL SCHOLAR CARD</span>
               </div>
-              <div className="text-2xl">☠️</div>
+              <div className="text-xl">☠️</div>
             </div>
 
-            <div className="my-3 space-y-0.5">
+            <div className="my-3 space-y-1">
               <div className="flex items-center gap-2">
-                <h2 className="text-lg font-black uppercase tracking-wide truncate">{profile.name}</h2>
+                <h2 className="font-heading text-lg font-medium uppercase tracking-tight text-white truncate">
+                  {profile.name}
+                </h2>
                 <button
                   onClick={() => {
                     setEditNameVal(profile.name);
                     setIsEditingName(true);
                   }}
-                  className="text-[10px] text-[#641C2B] underline font-bold"
+                  className="text-[10px] font-mono text-white/40 hover:text-white underline"
                 >
                   edit
                 </button>
               </div>
-              <p className="text-[10px] font-bold text-[#641C2B] bg-[#641C2B]/10 px-2 py-0.5 rounded inline-block">
+              <p className="text-[10px] font-mono text-[#C6FF00] bg-white/5 px-2 py-0.5 rounded-full inline-block border border-white/5">
                 {profile.currentTitle}
               </p>
             </div>
 
-            <div className="flex justify-between items-end border-t border-[#641C2B]/20 pt-2 text-[9px] font-mono">
+            <div className="flex justify-between items-end border-t border-white/10 pt-2 text-[9px] font-mono text-white/50">
               <div>
-                <span className="text-[#090909]/50 block">ID NUMBER</span>
-                <span className="font-bold">{profile.studentId}</span>
+                <span className="text-white/30 block">STUDENT ID</span>
+                <span className="font-bold text-white">{profile.studentId}</span>
               </div>
               <div className="text-right">
-                <span className="text-[#090909]/50 block">ENROLLED</span>
-                <span className="font-bold">
+                <span className="text-white/30 block">ENROLLED</span>
+                <span className="font-bold text-white">
                   {new Date(profile.createdAt).toLocaleDateString('en-US', {
                     month: 'short',
                     year: 'numeric',
@@ -177,19 +177,19 @@ export default function StudentPortal({
           {/* Key Metrics Overview */}
           <div className="md:col-span-2 grid grid-cols-2 sm:grid-cols-4 gap-4 h-full">
             {[
-              { label: 'Enrolled Courses', value: profile.enrolledCourses.length, icon: BookOpen, color: '#C6FF00' },
-              { label: 'Passed Courses', value: profile.completedCourses.length, icon: GraduationCap, color: '#88FF88' },
-              { label: 'Avg Exam Score', value: `${avgScore}%`, icon: Trophy, color: '#ff8c42' },
-              { label: 'Certificates', value: profile.certificates.length, icon: Award, color: '#F0EBDD' },
-            ].map(({ label, value, icon: Icon, color }) => (
+              { label: 'Enrolled Modules', value: profile.enrolledCourses.length, icon: BookOpen },
+              { label: 'Passed Exams', value: profile.completedCourses.length, icon: GraduationCap },
+              { label: 'Avg Exam Score', value: `${avgScore}%`, icon: Trophy },
+              { label: 'Certificates', value: profile.certificates.length, icon: Award },
+            ].map(({ label, value, icon: Icon }) => (
               <div
                 key={label}
-                className="bg-[#0f0f0f] border border-[#F0EBDD]/10 rounded-xl p-5 flex flex-col justify-between"
+                className="bg-[#111111]/90 border border-white/10 rounded-2xl p-5 flex flex-col justify-between"
               >
-                <Icon size={20} style={{ color }} />
+                <Icon size={18} className="text-white/40" />
                 <div className="mt-4">
-                  <div className="text-3xl font-black font-mono text-[#F0EBDD]">{value}</div>
-                  <div className="text-xs text-[#888888] font-medium mt-1 leading-snug">{label}</div>
+                  <div className="text-2xl sm:text-3xl font-mono font-bold text-white">{value}</div>
+                  <div className="text-xs text-white/50 font-light mt-1 leading-snug">{label}</div>
                 </div>
               </div>
             ))}
@@ -198,28 +198,28 @@ export default function StudentPortal({
 
         {/* Name Edit Modal */}
         {isEditingName && (
-          <div className="fixed inset-0 bg-[#090909]/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-            <div className="bg-[#0f0f0f] border border-[#F0EBDD]/20 rounded-xl p-6 max-w-sm w-full space-y-4">
-              <h3 className="text-lg font-bold text-[#F0EBDD]">Update Student Name</h3>
+          <div className="fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center p-4">
+            <div className="bg-[#111111] border border-white/20 rounded-2xl p-6 max-w-sm w-full space-y-4">
+              <h3 className="font-heading text-lg font-medium text-white">Update Scholar Alias</h3>
               <form onSubmit={handleUpdateNameSubmit} className="space-y-4">
                 <input
                   type="text"
                   value={editNameVal}
                   onChange={(e) => setEditNameVal(e.target.value)}
-                  className="w-full bg-[#090909] border border-[#F0EBDD]/20 rounded-lg px-4 py-2 text-sm text-[#F0EBDD]"
+                  className="w-full bg-white/5 border border-white/20 rounded-full px-4 py-2.5 text-xs sm:text-sm text-white focus:outline-none focus:border-white/50 font-mono"
                   autoFocus
                 />
                 <div className="flex justify-end gap-2">
                   <button
                     type="button"
                     onClick={() => setIsEditingName(false)}
-                    className="px-4 py-2 rounded text-xs text-[#888888] hover:text-[#F0EBDD]"
+                    className="px-4 py-2 rounded-full text-xs font-mono text-white/50 hover:text-white"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
-                    className="bg-[#C6FF00] text-[#090909] font-bold px-4 py-2 rounded text-xs"
+                    className="bg-white text-black font-medium px-5 py-2 rounded-full text-xs hover:bg-white/85"
                   >
                     Save
                   </button>
@@ -229,115 +229,54 @@ export default function StudentPortal({
           </div>
         )}
 
-        {/* Enrolled Courses Progress */}
-        <section className="space-y-4">
-          <div className="flex justify-between items-center">
-            <h2 className="text-xl font-bold uppercase tracking-wider text-[#F0EBDD] flex items-center gap-2">
-              <BookOpen size={18} className="text-[#C6FF00]" />
-              Course Enrollments
-            </h2>
-            <Link to="/courses" className="text-xs font-bold text-[#C6FF00] hover:underline flex items-center gap-1">
-              Browse More <ArrowRight size={12} />
-            </Link>
-          </div>
-
-          {profile.enrolledCourses.length === 0 ? (
-            <div className="bg-[#0f0f0f] border border-[#F0EBDD]/10 rounded-xl p-8 text-center space-y-3">
-              <p className="text-sm text-[#888888]">You have not enrolled in any courses yet.</p>
-              <Link
-                to="/courses"
-                className="inline-block bg-[#C6FF00] text-[#090909] font-bold px-5 py-2 rounded-lg text-xs"
-              >
-                Explore Catalogue
-              </Link>
+        {/* Certificates Section */}
+        {profile.certificates.length > 0 && (
+          <section className="space-y-6">
+            <div className="flex justify-between items-center border-b border-white/10 pb-4">
+              <h2 className="font-heading text-xl uppercase font-medium text-white flex items-center gap-2">
+                <Award size={18} className="text-[#C6FF00]" />
+                Earned Credentials ({profile.certificates.length})
+              </h2>
             </div>
-          ) : (
-            <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-4">
-              {profile.enrolledCourses.map((cId) => {
-                const isPassed = profile.completedCourses.includes(cId);
-                return (
-                  <div
-                    key={cId}
-                    className="bg-[#0f0f0f] border border-[#F0EBDD]/10 rounded-xl p-5 flex flex-col justify-between gap-4"
-                  >
-                    <div>
-                      <div className="flex justify-between items-start">
-                        <span className="text-[10px] font-bold bg-[#641C2B] text-[#F0EBDD] px-2 py-0.5 rounded">
-                          {cId}
-                        </span>
-                        {isPassed && (
-                          <span className="text-[10px] font-bold text-[#C6FF00] bg-[#C6FF00]/10 px-2 py-0.5 rounded">
-                            PASSED
-                          </span>
-                        )}
-                      </div>
-                      <h3 className="font-bold text-base mt-2">{cId}</h3>
-                    </div>
 
-                    <Link
-                      to={`/exam/${cId}`}
-                      className={`w-full text-center py-2 rounded text-xs font-bold transition ${
-                        isPassed
-                          ? 'border border-[#F0EBDD]/20 text-[#F0EBDD] hover:bg-[#F0EBDD]/5'
-                          : 'bg-[#C6FF00] text-[#090909] hover:bg-[#d4ff33]'
-                      }`}
-                    >
-                      {isPassed ? 'Retake Exam' : 'Take Exam →'}
-                    </Link>
-                  </div>
-                );
-              })}
-            </div>
-          )}
-        </section>
-
-        {/* Certificates Earned */}
-        <section className="space-y-4">
-          <h2 className="text-xl font-bold uppercase tracking-wider text-[#F0EBDD] flex items-center gap-2">
-            <Award size={18} className="text-[#C6FF00]" />
-            Cursed Credentials ({profile.certificates.length})
-          </h2>
-
-          {profile.certificates.length === 0 ? (
-            <div className="bg-[#0f0f0f] border border-[#F0EBDD]/10 rounded-xl p-8 text-center">
-              <p className="text-sm text-[#888888]">
-                Pass an examination with at least 50% to generate your first official cursed diploma.
-              </p>
-            </div>
-          ) : (
             <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-4">
               {profile.certificates.map((cert) => (
                 <div
                   key={cert.id}
-                  className="bg-[#0f0f0f] border border-[#641C2B]/40 rounded-xl p-5 flex flex-col justify-between gap-4"
+                  className="rounded-2xl border border-white/10 bg-[#111111]/90 p-6 flex flex-col justify-between hover:border-white/25 transition-all"
                 >
-                  <div className="space-y-1">
-                    <span className="text-[10px] font-mono text-[#888888]">{cert.certificateCode}</span>
-                    <h3 className="font-bold text-base text-[#F0EBDD]">{cert.courseTitle}</h3>
-                    <p className="text-xs font-semibold text-[#C6FF00]">{cert.gradeLabel}</p>
+                  <div className="space-y-2">
+                    <span className="text-[10px] font-mono text-white/40 uppercase">
+                      CERT #{cert.id.slice(0, 8)}
+                    </span>
+                    <h3 className="font-heading text-base font-medium text-white leading-snug">
+                      {cert.courseTitle}
+                    </h3>
+                    <p className="text-xs font-mono text-[#C6FF00]">{cert.gradeLabel}</p>
                   </div>
 
                   <button
                     onClick={() => setSelectedCert(cert)}
-                    className="w-full flex items-center justify-center gap-1.5 bg-[#F0EBDD] text-[#090909] font-bold py-2 rounded text-xs hover:bg-white transition"
+                    className="mt-6 w-full py-2.5 rounded-full border border-white/20 text-xs font-medium text-white hover:bg-white/10 transition flex items-center justify-center gap-2"
                   >
-                    <ExternalLink size={14} /> View Certificate
+                    <span>Inspect Certificate</span>
+                    <ExternalLink size={12} />
                   </button>
                 </div>
               ))}
             </div>
-          )}
-        </section>
+          </section>
+        )}
 
         {/* Certificate Modal */}
         {selectedCert && (
-          <div className="fixed inset-0 bg-[#090909]/90 backdrop-blur-md z-50 flex items-center justify-center p-4 overflow-y-auto">
-            <div className="relative w-full max-w-4xl py-8">
+          <div className="fixed inset-0 bg-black/90 backdrop-blur-xl z-50 flex items-center justify-center p-4 overflow-y-auto">
+            <div className="relative max-w-4xl w-full my-8">
               <button
                 onClick={() => setSelectedCert(null)}
-                className="absolute top-2 right-2 text-[#888888] hover:text-[#F0EBDD] text-sm font-bold bg-[#0f0f0f] px-3 py-1.5 rounded-lg border border-[#F0EBDD]/20 z-10"
+                className="absolute -top-10 right-0 text-white/60 hover:text-white text-xs font-mono"
               >
-                ✕ Close
+                [ CLOSE ✕ ]
               </button>
               <Certificate certificate={selectedCert} />
             </div>
@@ -345,23 +284,22 @@ export default function StudentPortal({
         )}
 
         {/* Achievements Section */}
-        <section className="space-y-4">
-          <div className="flex flex-wrap justify-between items-center gap-4">
-            <h2 className="text-xl font-bold uppercase tracking-wider text-[#F0EBDD] flex items-center gap-2">
+        <section className="space-y-6">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-white/10 pb-4">
+            <h2 className="font-heading text-xl uppercase font-medium text-white flex items-center gap-2">
               <Trophy size={18} className="text-[#C6FF00]" />
-              Academic Accolades ({profile.achievements.length}/{achievements.length})
+              Academic Accolades ({profile.achievements.length} / {achievements.length})
             </h2>
 
-            {/* Filter buttons */}
-            <div className="flex gap-2">
+            <div className="flex gap-1.5 bg-white/5 border border-white/10 rounded-full p-1 text-xs font-mono">
               {(['all', 'unlocked', 'locked'] as const).map((filter) => (
                 <button
                   key={filter}
                   onClick={() => setAchievementFilter(filter)}
-                  className={`text-xs font-bold uppercase px-3 py-1.5 rounded-lg transition ${
+                  className={`px-3 py-1 rounded-full uppercase transition ${
                     achievementFilter === filter
-                      ? 'bg-[#C6FF00] text-[#090909]'
-                      : 'bg-[#0f0f0f] border border-[#F0EBDD]/10 text-[#888888] hover:text-[#F0EBDD]'
+                      ? 'bg-white text-black font-medium'
+                      : 'text-white/60 hover:text-white'
                   }`}
                 >
                   {filter}
@@ -370,7 +308,7 @@ export default function StudentPortal({
             </div>
           </div>
 
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
+          <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-4">
             {filteredAchievements.map((ach) => (
               <AchievementCard
                 key={ach.id}
@@ -381,56 +319,54 @@ export default function StudentPortal({
           </div>
         </section>
 
-        {/* Danger Zone: Reset Progress */}
-        <section className="border border-[#641C2B]/40 bg-[#641C2B]/10 rounded-2xl p-6 space-y-4">
-          <div className="flex items-center gap-2 text-[#ff6b6b]">
-            <AlertTriangle size={20} />
-            <h3 className="font-bold text-base uppercase">Danger Zone: Academic Expulsion</h3>
+        {/* Danger Zone */}
+        <div className="border border-red-500/20 bg-red-500/5 rounded-3xl p-8 space-y-4">
+          <div className="flex items-center gap-2 text-red-400 font-mono text-xs uppercase tracking-wider">
+            <AlertTriangle size={15} />
+            Danger Zone · Academic Expulsion
           </div>
-          <p className="text-xs text-[#888888]">
-            Resetting your student profile permanently clears your enrolled courses, exam history, unlocked achievements, and earned certificates from this browser.
+          <p className="text-xs text-white/60 font-light leading-relaxed max-w-xl">
+            Permanently clear all enrolled courses, exam history, credentials, and achievements stored on
+            this browser. This action cannot be reversed.
           </p>
 
           {!showResetConfirm ? (
             <button
               onClick={() => setShowResetConfirm(true)}
-              className="bg-[#641C2B] text-[#F0EBDD] text-xs font-bold px-4 py-2.5 rounded-lg hover:bg-[#7e2336] transition flex items-center gap-2"
+              className="py-2.5 px-6 rounded-full border border-red-500/40 text-red-400 hover:bg-red-500/10 text-xs font-mono transition"
             >
-              <RotateCcw size={14} /> Reset All Progress
+              Reset All Academic Records
             </button>
           ) : (
-            <div className="space-y-3 bg-[#090909] p-4 rounded-xl border border-[#641C2B]">
-              <p className="text-xs text-[#F0EBDD]">
-                To confirm, type <span className="font-mono text-[#C6FF00] font-bold">DROPOUT</span> below:
+            <div className="space-y-3 pt-2">
+              <p className="text-xs font-mono text-red-300">
+                Type <strong className="text-white underline">DROPOUT</strong> below to confirm expulsion:
               </p>
-              <div className="flex gap-2">
+              <div className="flex gap-2 max-w-sm">
                 <input
                   type="text"
                   value={resetInput}
                   onChange={(e) => setResetInput(e.target.value)}
                   placeholder="DROPOUT"
-                  className="bg-[#0f0f0f] border border-[#F0EBDD]/20 rounded-lg px-3 py-1.5 text-xs text-[#F0EBDD] font-mono focus:outline-none focus:border-[#ff6b6b]"
+                  className="bg-black/50 border border-red-500/40 rounded-full px-4 py-2 text-xs text-white font-mono flex-1 outline-none focus:border-red-500"
                 />
                 <button
                   onClick={handleConfirmReset}
                   disabled={resetInput !== 'DROPOUT'}
-                  className="bg-[#ff6b6b] disabled:opacity-40 text-[#090909] text-xs font-black px-4 py-1.5 rounded-lg"
+                  className="bg-red-500 text-white font-mono text-xs px-5 py-2 rounded-full disabled:opacity-30 hover:bg-red-600 transition"
                 >
-                  Confirm Expulsion
+                  Confirm
                 </button>
                 <button
-                  onClick={() => {
-                    setShowResetConfirm(false);
-                    setResetInput('');
-                  }}
-                  className="text-xs text-[#888888] px-3 py-1.5 hover:text-[#F0EBDD]"
+                  onClick={() => setShowResetConfirm(false)}
+                  className="text-xs text-white/50 hover:text-white font-mono px-3"
                 >
                   Cancel
                 </button>
               </div>
             </div>
           )}
-        </section>
+        </div>
       </div>
     </div>
   );

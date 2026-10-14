@@ -40,17 +40,17 @@ export default function Certificate({ certificate }: CertificateProps) {
   };
 
   return (
-    <div className="flex flex-col items-center gap-6 w-full max-w-4xl mx-auto">
+    <div className="flex flex-col items-center gap-6 w-full max-w-4xl mx-auto select-none">
       {/* Certificate Frame */}
       <div
         ref={certRef}
-        className="w-full bg-[#F0EBDD] text-[#090909] p-8 md:p-12 relative shadow-2xl rounded-sm border-8 border-[#641C2B] font-serif select-none"
+        className="w-full bg-[#F0EBDD] text-[#090909] p-8 md:p-12 relative shadow-2xl rounded-2xl border-4 border-[#641C2B] font-serif select-none"
         style={{
           aspectRatio: '1.414 / 1', // A4 proportions
         }}
       >
         {/* Inner decorative border */}
-        <div className="w-full h-full border-2 border-dashed border-[#641C2B]/60 p-6 flex flex-col justify-between items-center text-center relative">
+        <div className="w-full h-full border border-dashed border-[#641C2B]/60 p-6 flex flex-col justify-between items-center text-center relative rounded-xl">
           {/* Corner ornaments */}
           <div className="absolute top-2 left-2 text-xl text-[#641C2B]">✦</div>
           <div className="absolute top-2 right-2 text-xl text-[#641C2B]">✦</div>
@@ -102,10 +102,10 @@ export default function Certificate({ certificate }: CertificateProps) {
             </div>
 
             <div className="text-right space-y-1">
-              <p className="font-serif italic text-base text-[#090909] font-bold">Prof. Braincell</p>
-              <p className="text-[10px] text-[#090909]/70 uppercase tracking-wider">
-                Dean of Absolutely Nothing
+              <p className="font-serif italic text-sm text-[#090909]/90 border-b border-[#090909]/30 pb-0.5 inline-block">
+                Prof. Braincell, PhD
               </p>
+              <p className="text-[10px] uppercase tracking-wider text-[#090909]/60">Presiding Dean</p>
             </div>
           </div>
 
@@ -120,16 +120,16 @@ export default function Certificate({ certificate }: CertificateProps) {
       <div className="flex gap-4">
         <button
           onClick={handleDownload}
-          className="flex items-center gap-2 bg-[#C6FF00] text-[#090909] font-bold px-5 py-2.5 rounded-lg hover:bg-[#d4ff33] active:scale-95 transition"
+          className="flex items-center gap-2 bg-white text-black font-medium text-xs sm:text-sm px-6 py-3 rounded-full hover:bg-white/85 active:scale-95 transition shadow-md"
         >
-          <Download size={18} />
+          <Download size={16} />
           Download Certificate (PNG)
         </button>
         <button
           onClick={handlePrint}
-          className="flex items-center gap-2 border border-[#F0EBDD]/20 text-[#F0EBDD] font-bold px-5 py-2.5 rounded-lg hover:bg-[#F0EBDD]/5 active:scale-95 transition"
+          className="flex items-center gap-2 border border-white/20 text-white font-medium text-xs sm:text-sm px-6 py-3 rounded-full hover:bg-white/10 active:scale-95 transition"
         >
-          <Printer size={18} />
+          <Printer size={16} />
           Print
         </button>
       </div>

@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Users, BookOpen, Zap } from 'lucide-react';
+import { Users, BookOpen, Zap, ArrowRight } from 'lucide-react';
 import type { Department } from '../types';
 
 interface DepartmentCardProps {
@@ -14,32 +14,22 @@ export default function DepartmentCard({ department, courseCount }: DepartmentCa
 
   return (
     <motion.div
-      whileHover={{ y: -5, boxShadow: `0 16px 48px ${accent}14` }}
-      transition={{ duration: 0.2, ease: 'easeOut' }}
-      className="rounded-xl overflow-hidden flex flex-col"
-      style={{
-        backgroundColor: '#0f0f0f',
-        border: `1px solid rgba(240,235,221,0.1)`,
-      }}
+      whileHover={{ y: -4 }}
+      transition={{ duration: 0.25, ease: 'easeOut' }}
+      className="group rounded-2xl overflow-hidden flex flex-col bg-[#111111]/90 border border-white/10 hover:border-white/25 transition-colors duration-300 h-full"
     >
-      {/* Accent top bar */}
-      <div className="h-1 w-full" style={{ backgroundColor: accent }} />
-
       <div className="p-6 flex flex-col gap-4 flex-1">
         {/* Emoji + name */}
         <div className="flex items-start gap-4">
-          <div
-            className="shrink-0 text-4xl w-16 h-16 rounded-xl flex items-center justify-center"
-            style={{ backgroundColor: `${accent}18` }}
-          >
+          <div className="shrink-0 text-3xl w-14 h-14 rounded-2xl flex items-center justify-center bg-white/5 border border-white/10">
             {department.emoji ?? '🎓'}
           </div>
           <div className="flex flex-col gap-1 min-w-0">
-            <h3 className="text-lg font-extrabold text-[#F0EBDD] leading-tight">
+            <h3 className="text-lg font-heading font-medium text-white group-hover:text-white/80 transition-colors leading-tight">
               {department.name}
             </h3>
             {department.professor && (
-              <p className="text-xs text-[#888888]">
+              <p className="text-xs text-white/50 font-mono">
                 Head: <span style={{ color: accent }}>{department.professor}</span>
               </p>
             )}
@@ -48,52 +38,41 @@ export default function DepartmentCard({ department, courseCount }: DepartmentCa
 
         {/* Description */}
         {department.description && (
-          <p className="text-sm text-[#888888] leading-relaxed line-clamp-3">
+          <p className="text-xs sm:text-sm text-white/60 font-light leading-relaxed line-clamp-3">
             {department.description}
           </p>
         )}
 
         {/* Stats row */}
-        <div className="flex items-center gap-4 flex-wrap">
+        <div className="flex items-center gap-4 flex-wrap text-xs text-white/50 font-mono pt-1">
           {department.stats?.students !== undefined && (
-            <div className="flex items-center gap-1.5 text-xs text-[#888888]">
-              <Users size={12} style={{ color: accent }} />
-              <span>
-                <span className="font-bold text-[#F0EBDD]">{department.stats.students.toLocaleString()}</span>{' '}
-                students
-              </span>
+            <div className="flex items-center gap-1.5">
+              <Users size={12} className="text-white/40" />
+              <span>{department.stats.students.toLocaleString()} students</span>
             </div>
           )}
-          <div className="flex items-center gap-1.5 text-xs text-[#888888]">
-            <BookOpen size={12} style={{ color: accent }} />
-            <span>
-              <span className="font-bold text-[#F0EBDD]">
-                {courseCount ?? department.courses?.length ?? 0}
-              </span>{' '}
-              courses
-            </span>
+          <div className="flex items-center gap-1.5">
+            <BookOpen size={12} className="text-white/40" />
+            <span>{courseCount ?? department.courses?.length ?? 0} courses</span>
           </div>
           {department.stats?.creditHours !== undefined && (
-            <div className="flex items-center gap-1.5 text-xs text-[#888888]">
-              <Zap size={12} style={{ color: accent }} />
-              <span>
-                <span className="font-bold text-[#F0EBDD]">{department.stats.creditHours}</span>{' '}
-                credit hrs
-              </span>
+            <div className="flex items-center gap-1.5">
+              <Zap size={12} className="text-white/40" />
+              <span>{department.stats.creditHours} credits</span>
             </div>
           )}
         </div>
 
         {/* Course preview */}
         {previewCourses.length > 0 && (
-          <div className="flex flex-col gap-1.5">
-            <p className="text-[10px] uppercase tracking-widest font-bold text-[#888888]">
-              Featured Courses
+          <div className="flex flex-col gap-2 pt-2 border-t border-white/5">
+            <p className="text-[10px] uppercase font-mono tracking-widest text-white/40">
+              Curriculum Sampling
             </p>
-            <ul className="space-y-1">
+            <ul className="space-y-1.5">
               {previewCourses.map((courseCode, i) => (
-                <li key={i} className="text-xs text-[#F0EBDD] flex items-center gap-2">
-                  <span className="w-1 h-1 rounded-full shrink-0" style={{ backgroundColor: accent }} />
+                <li key={i} className="text-xs text-white/70 flex items-center gap-2 font-mono">
+                  <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ backgroundColor: accent }} />
                   {courseCode}
                 </li>
               ))}
@@ -102,23 +81,13 @@ export default function DepartmentCard({ department, courseCount }: DepartmentCa
         )}
 
         {/* CTA */}
-        <div className="mt-auto pt-2">
+        <div className="mt-auto pt-4 border-t border-white/5">
           <Link
             to={`/departments/${department.id}`}
-            className="block w-full text-center py-2.5 rounded text-sm font-bold transition-colors duration-150"
-            style={{
-              backgroundColor: `${accent}18`,
-              color: accent,
-              border: `1px solid ${accent}40`,
-            }}
-            onMouseEnter={(e) => {
-              (e.currentTarget as HTMLAnchorElement).style.backgroundColor = `${accent}30`;
-            }}
-            onMouseLeave={(e) => {
-              (e.currentTarget as HTMLAnchorElement).style.backgroundColor = `${accent}18`;
-            }}
+            className="w-full text-center py-2.5 rounded-full text-xs font-medium tracking-wide text-black bg-white hover:bg-white/85 transition-all flex items-center justify-center gap-2"
           >
-            Explore Department →
+            <span>Explore Department</span>
+            <ArrowRight size={13} />
           </Link>
         </div>
       </div>

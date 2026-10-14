@@ -50,18 +50,19 @@ const messages = [
 ];
 
 const MarqueeSection: React.FC = () => {
-  const text = messages.join('  ·  ');
+  const text = messages.join('   ✳︎   ');
 
   return (
-    <div className="bg-[#C6FF00] py-3 overflow-hidden select-none relative z-10">
+    <div className="bg-[#0b0b0b] border-y border-white/10 py-3.5 overflow-hidden select-none relative z-10">
       <motion.div
         className="flex gap-0 whitespace-nowrap"
         animate={{ x: [0, '-50%'] }}
         transition={{ duration: 32, repeat: Infinity, ease: 'linear' }}
       >
         {[...Array(2)].map((_, i) => (
-          <span key={i} className="text-[#090909] font-black text-xs sm:text-sm tracking-widest uppercase px-8 shrink-0">
-            {text} &nbsp;&nbsp;&nbsp; · &nbsp;&nbsp;&nbsp;
+          <span key={i} className="text-white/80 font-mono text-xs tracking-widest uppercase px-8 shrink-0 flex items-center gap-3">
+            <span>{text}</span>
+            <span className="text-[#C6FF00]">✳︎</span>
           </span>
         ))}
       </motion.div>
@@ -107,17 +108,17 @@ const hallEntries = [
 
 const informationalFeatures = [
   {
-    icon: <BookOpen size={22} />,
+    icon: <BookOpen size={20} />,
     title: 'Open Syllabus Archive',
     desc: 'Browse complete curricula from Advanced Overthinking to Quantum Rizz. No paywalls, no login popups.',
   },
   {
-    icon: <Sparkles size={22} />,
+    icon: <Sparkles size={20} />,
     title: 'Instant Question Hall',
     desc: 'Interactive examination questionnaires grounded in real internet subcultures. Test your cognitive resilience.',
   },
   {
-    icon: <Flame size={22} />,
+    icon: <Flame size={20} />,
     title: 'Zero Paperwork',
     desc: 'No applications, no student loans, no admissions essays. Read, digest, and walk away with your aura intact.',
   },
@@ -199,25 +200,25 @@ const Home: React.FC<HomeProps> = ({ profile: _profile }) => {
           >
             <Link
               to="/courses"
-              className="bg-white text-black font-medium text-xs sm:text-sm px-5 py-2.5 rounded-full hover:bg-white/85 hover:scale-[1.02] active:scale-[0.98] transition-all"
+              className="bg-white text-black font-medium text-xs sm:text-sm px-5 py-2.5 rounded-full hover:bg-white/85 hover:scale-[1.02] active:scale-[0.98] transition-all shadow-md"
             >
               Explore courses
             </Link>
             <Link
               to="/examination-hall"
-              className="bg-white text-black font-medium text-xs sm:text-sm px-5 py-2.5 rounded-full hover:bg-white/85 hover:scale-[1.02] active:scale-[0.98] transition-all"
+              className="bg-white text-black font-medium text-xs sm:text-sm px-5 py-2.5 rounded-full hover:bg-white/85 hover:scale-[1.02] active:scale-[0.98] transition-all shadow-md"
             >
               Take an exam
             </Link>
             <Link
               to="/hall-of-fame"
-              className="bg-white text-black font-medium text-xs sm:text-sm px-5 py-2.5 rounded-full hover:bg-white/85 hover:scale-[1.02] active:scale-[0.98] transition-all"
+              className="bg-white text-black font-medium text-xs sm:text-sm px-5 py-2.5 rounded-full hover:bg-white/85 hover:scale-[1.02] active:scale-[0.98] transition-all shadow-md"
             >
               Check your aura
             </Link>
             <Link
               to="/portal"
-              className="bg-white text-black font-medium text-xs sm:text-sm px-5 py-2.5 rounded-full hover:bg-white/85 hover:scale-[1.02] active:scale-[0.98] transition-all"
+              className="bg-white text-black font-medium text-xs sm:text-sm px-5 py-2.5 rounded-full hover:bg-white/85 hover:scale-[1.02] active:scale-[0.98] transition-all shadow-md"
             >
               Enter the student portal
             </Link>
@@ -226,7 +227,7 @@ const Home: React.FC<HomeProps> = ({ profile: _profile }) => {
             <button
               type="button"
               onClick={handleCopyEmail}
-              className="border border-white/20 bg-black/30 backdrop-blur-md text-white/90 text-xs px-4 py-2 rounded-full flex items-center gap-2 hover:border-white/50 hover:bg-black/50 transition-all cursor-pointer focus:outline-none focus:ring-1 focus:ring-white/40"
+              className="border border-white/20 bg-black/40 backdrop-blur-md text-white/90 text-xs px-4 py-2 rounded-full flex items-center gap-2 hover:border-white/50 hover:bg-black/60 transition-all cursor-pointer focus:outline-none focus:ring-1 focus:ring-white/40"
               title="Copy Dean's Email"
             >
               {copiedEmail ? (
@@ -256,12 +257,12 @@ const Home: React.FC<HomeProps> = ({ profile: _profile }) => {
       <MarqueeSection />
 
       {/* ── 3. MEME PHILOSOPHY QUOTE ─────────────────────────────────────── */}
-      <section className="relative z-10 py-16 px-6 bg-[#090909]/95 backdrop-blur-md border-b border-white/5">
+      <section className="relative z-10 py-20 px-6 bg-[#090909]/95 backdrop-blur-md border-b border-white/5">
         <Quote />
       </section>
 
       {/* ── 4. HOW THIS KNOWLEDGE BASE WORKS ──────────────────────────────── */}
-      <section className="relative z-10 py-20 px-6 bg-[#0a0a0a]/95 backdrop-blur-md border-b border-white/5">
+      <section className="relative z-10 py-24 px-6 bg-[#0a0a0a]/95 backdrop-blur-md border-b border-white/5">
         <div className="max-w-5xl mx-auto">
           <Reveal>
             <div className="text-center mb-16">
@@ -271,7 +272,7 @@ const Home: React.FC<HomeProps> = ({ profile: _profile }) => {
               <h2 className="font-heading uppercase text-3xl sm:text-4xl md:text-5xl leading-tight text-white">
                 HOW THIS REPOSITORY OPERATES
               </h2>
-              <p className="text-white/60 text-sm mt-3 max-w-lg mx-auto font-light">
+              <p className="text-white/60 text-sm mt-3 max-w-lg mx-auto font-light leading-relaxed">
                 No passwords to forget. No admission quotas. Just unfiltered academic comedy.
               </p>
             </div>
@@ -281,7 +282,7 @@ const Home: React.FC<HomeProps> = ({ profile: _profile }) => {
             {informationalFeatures.map((feat, i) => (
               <Reveal key={feat.title} delay={i * 0.1}>
                 <div className="bg-[#111111]/90 border border-white/10 p-8 rounded-2xl flex flex-col gap-4 hover:border-white/30 transition-all duration-300">
-                  <div className="w-10 h-10 bg-white/10 border border-white/20 text-white flex items-center justify-center rounded-xl">
+                  <div className="w-10 h-10 bg-white/5 border border-white/15 text-white flex items-center justify-center rounded-xl">
                     {feat.icon}
                   </div>
                   <h3 className="font-heading text-lg font-medium text-white">{feat.title}</h3>
@@ -304,7 +305,7 @@ const Home: React.FC<HomeProps> = ({ profile: _profile }) => {
                 </p>
                 <h2 className="font-heading uppercase text-4xl sm:text-5xl md:text-6xl leading-none text-white">
                   COURSES OF<br />
-                  <span className="text-[#C6FF00]">QUESTIONABLE</span> VALUE
+                  <span className="text-white/40">QUESTIONABLE</span> VALUE
                 </h2>
               </div>
               <Link
@@ -327,7 +328,7 @@ const Home: React.FC<HomeProps> = ({ profile: _profile }) => {
       </section>
 
       {/* ── 6. FACULTY ───────────────────────────────────────────────────── */}
-      <section className="relative z-10 py-24 px-6 bg-[#0d0d0d]/95 backdrop-blur-md border-b border-white/5">
+      <section className="relative z-10 py-24 px-6 bg-[#0a0a0a]/95 backdrop-blur-md border-b border-white/5">
         <div className="max-w-7xl mx-auto">
           <Reveal>
             <div className="mb-14">
@@ -361,7 +362,7 @@ const Home: React.FC<HomeProps> = ({ profile: _profile }) => {
               </p>
               <h2 className="font-heading uppercase text-4xl sm:text-5xl md:text-6xl leading-none text-white">
                 WHAT CHRONICALLY ONLINE<br />
-                <span className="text-[#C6FF00]">STUDENTS</span> SAY
+                <span className="text-white/40">STUDENTS</span> SAY
               </h2>
             </div>
           </Reveal>
@@ -369,7 +370,7 @@ const Home: React.FC<HomeProps> = ({ profile: _profile }) => {
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
             {testimonials.map((t, i) => (
               <Reveal key={i} delay={i * 0.08}>
-                <div className="border border-white/10 bg-[#121212]/80 p-8 hover:border-white/30 transition-all duration-300 flex flex-col gap-6 rounded-2xl">
+                <div className="border border-white/10 bg-[#111111]/90 p-8 hover:border-white/30 transition-all duration-300 flex flex-col gap-6 rounded-2xl">
                   <p className="text-white/40 text-[10px] font-mono tracking-widest uppercase">
                     [FICTIONAL ARCHIVAL QUOTE]
                   </p>
@@ -413,8 +414,8 @@ const Home: React.FC<HomeProps> = ({ profile: _profile }) => {
           <div className="flex flex-col gap-3">
             {hallEntries.map((entry) => (
               <Reveal key={entry.rank} delay={entry.rank * 0.08}>
-                <div className="border border-white/10 bg-[#121212]/80 p-6 flex items-center gap-6 hover:border-white/30 transition-all duration-300 rounded-2xl">
-                  <span className="text-[#C6FF00] font-bold text-2xl sm:text-3xl font-mono w-12 shrink-0">
+                <div className="border border-white/10 bg-[#111111]/90 p-6 flex items-center gap-6 hover:border-white/30 transition-all duration-300 rounded-2xl">
+                  <span className="text-white font-bold text-2xl sm:text-3xl font-mono w-12 shrink-0">
                     #{entry.rank}
                   </span>
                   <div className="flex-1">
@@ -434,21 +435,26 @@ const Home: React.FC<HomeProps> = ({ profile: _profile }) => {
         </div>
       </section>
 
-      {/* ── 9. BOTTOM EXPLORATION BANNER ─────────────────────────────────── */}
-      <section className="relative z-10 py-24 px-6 bg-[#C6FF00] text-[#090909] select-none">
+      {/* ── 9. BOTTOM EXPLORATION BANNER (MATCHES DARK MINIMALIST AESTHETIC) ──── */}
+      <section className="relative z-10 py-28 px-6 bg-[#0c0c0c] border-t border-white/10 text-white select-none">
         <Reveal className="max-w-4xl mx-auto text-center">
+          <p className="text-[#C6FF00] text-xs font-mono tracking-[0.3em] uppercase mb-4">
+            OPEN ARCHIVE · ZERO TUITION DEBT
+          </p>
           <h2
-            className="font-heading font-medium uppercase text-[#090909] leading-[0.92] mb-6"
-            style={{ fontSize: 'clamp(2.2rem, 6vw, 4.5rem)' }}
+            className="font-heading font-medium uppercase text-white leading-[0.92] mb-6"
+            style={{ fontSize: 'clamp(2.4rem, 6.5vw, 4.8rem)' }}
           >
-            READY TO EXPLORE THE CURRICULUM?
+            READY TO DAMAGE YOUR
+            <br />
+            ACADEMIC RECORD?
           </h2>
-          <p className="text-[#090909]/80 text-sm sm:text-base max-w-xl mx-auto mb-8 font-normal leading-relaxed">
+          <p className="text-white/60 text-sm sm:text-base max-w-xl mx-auto mb-8 font-light leading-relaxed">
             No signup. No tuition. No applications. Just the most thoroughly unserious syllabus on the internet.
           </p>
           <Link
             to="/courses"
-            className="inline-flex items-center gap-3 bg-[#090909] text-white font-medium text-xs sm:text-sm tracking-wider uppercase px-8 py-3.5 rounded-full hover:bg-black/80 transition-all duration-200"
+            className="inline-flex items-center gap-3 bg-white text-black font-medium text-xs sm:text-sm tracking-wider uppercase px-8 py-3.5 rounded-full hover:bg-white/85 transition-all duration-200 shadow-lg"
           >
             EXPLORE ALL 26 COURSES <ArrowRight size={16} />
           </Link>

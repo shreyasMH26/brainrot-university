@@ -98,7 +98,7 @@ function App() {
 
   return (
     <Router>
-      <div className="min-h-screen bg-[#090909] text-[#F0EBDD] flex flex-col">
+      <div className="min-h-screen bg-[#090909] text-white flex flex-col font-sans">
         {/* Konami effect overlay */}
         {showKonamiEffect && (
           <div className="fixed inset-0 z-[9999] pointer-events-none">
@@ -106,7 +106,7 @@ function App() {
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[#C6FF00] text-4xl font-bold text-center">
               <div className="text-6xl mb-4">🕹️</div>
               <div>BRAINROT ACTIVATED</div>
-              <div className="text-lg mt-2 text-[#F0EBDD]">Achievement Unlocked: Chronically Online Since Birth</div>
+              <div className="text-lg mt-2 text-white">Achievement Unlocked: Chronically Online Since Birth</div>
             </div>
           </div>
         )}
@@ -150,6 +150,24 @@ function App() {
                 <CourseDetail
                   profile={profile}
                   onEnroll={enrollCourse}
+                />
+              }
+            />
+            <Route
+              path="/examination-hall"
+              element={
+                <ExaminationHall
+                  profile={profile}
+                  onSubmitResult={submitExamResult}
+                />
+              }
+            />
+            <Route
+              path="/examination-hall/:courseId"
+              element={
+                <ExaminationHall
+                  profile={profile}
+                  onSubmitResult={submitExamResult}
                 />
               }
             />

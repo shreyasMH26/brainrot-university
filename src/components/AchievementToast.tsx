@@ -45,46 +45,35 @@ export default function AchievementToast({ achievementIds, onDismiss }: Achievem
         {visible && (
           <motion.div
             key={`${current.id}-${currentIndex}`}
-            initial={{ x: 120, opacity: 0 }}
+            initial={{ x: 60, opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
-            exit={{ x: 120, opacity: 0 }}
-            transition={{ type: 'spring', stiffness: 320, damping: 28 }}
-            className="pointer-events-auto relative flex items-center gap-4 rounded-xl px-5 py-4 shadow-2xl"
-            style={{
-              backgroundColor: '#0f0f0f',
-              border: '1px solid rgba(198,255,0,0.35)',
-              minWidth: 280,
-              maxWidth: 340,
-              boxShadow: '0 8px 40px rgba(198,255,0,0.12)',
-            }}
+            exit={{ x: 60, opacity: 0 }}
+            transition={{ duration: 0.35, ease: 'easeOut' }}
+            className="pointer-events-auto relative flex items-center gap-4 rounded-2xl p-4 shadow-2xl bg-[#111111]/95 border border-white/20 backdrop-blur-xl max-w-sm"
           >
             {/* Progress bar */}
             <motion.div
-              className="absolute bottom-0 left-0 h-0.5 rounded-b-xl"
-              style={{ backgroundColor: '#C6FF00' }}
+              className="absolute bottom-0 left-0 h-0.5 rounded-b-2xl bg-white"
               initial={{ width: '100%' }}
               animate={{ width: '0%' }}
               transition={{ duration: 4, ease: 'linear' }}
             />
 
             {/* Icon */}
-            <div
-              className="shrink-0 w-12 h-12 rounded-full flex items-center justify-center text-2xl"
-              style={{ backgroundColor: 'rgba(198,255,0,0.12)' }}
-            >
+            <div className="shrink-0 w-11 h-11 rounded-xl flex items-center justify-center text-2xl bg-white/5 border border-white/10">
               {current.icon ?? '🏆'}
             </div>
 
             {/* Text */}
             <div className="flex flex-col gap-0.5 flex-1 min-w-0">
               <div className="flex items-center gap-1.5">
-                <Trophy size={11} style={{ color: '#C6FF00' }} />
-                <span className="text-[10px] font-black uppercase tracking-widest text-[#C6FF00]">
-                  Achievement Unlocked!
+                <Trophy size={11} className="text-[#C6FF00]" />
+                <span className="text-[10px] font-mono uppercase tracking-widest text-[#C6FF00]">
+                  Accolade Unlocked
                 </span>
               </div>
-              <p className="text-sm font-bold text-[#F0EBDD] truncate">{current.title}</p>
-              <p className="text-xs text-[#888888] line-clamp-2 leading-relaxed">
+              <p className="text-xs font-heading font-medium text-white truncate">{current.title}</p>
+              <p className="text-[11px] text-white/50 font-light line-clamp-2 leading-relaxed">
                 {current.description}
               </p>
             </div>
@@ -92,20 +81,11 @@ export default function AchievementToast({ achievementIds, onDismiss }: Achievem
             {/* Dismiss */}
             <button
               onClick={handleDismiss}
-              className="shrink-0 text-[#888888] hover:text-[#F0EBDD] transition-colors p-1 -mr-1"
+              className="shrink-0 text-white/40 hover:text-white transition-colors p-1"
               aria-label="Dismiss"
             >
-              <X size={16} />
+              <X size={14} />
             </button>
-
-            {/* Counter (if multiple) */}
-            {matched.length > 1 && (
-              <div
-                className="absolute top-2 right-8 text-[9px] font-bold text-[#888888]"
-              >
-                {currentIndex + 1}/{matched.length}
-              </div>
-            )}
           </motion.div>
         )}
       </AnimatePresence>

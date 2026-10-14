@@ -6,19 +6,14 @@ import {
   ChevronLeft,
   Clock,
   CheckCircle,
-  XCircle,
-  AlertTriangle,
-  Award,
   RotateCcw,
   BookOpen,
-  Eye,
-  Send,
-  Timer,
-  TimerOff,
+  ArrowRight,
+  Award,
 } from 'lucide-react';
 import { getQuizByCourseId } from '../data/quizzes';
-import { getCourseById } from '../data/courses';
-import { calculateGrade, getGradeColor, getGradeEmoji } from '../utils/grading';
+import { getCourseById, courses as allCourses } from '../data/courses';
+import { calculateGrade } from '../utils/grading';
 import type { StudentProfile, ExamResult } from '../types';
 
 type Step = 'pre' | 'exam' | 'review' | 'results';
@@ -52,35 +47,12 @@ const ExaminationHall: React.FC<Props> = ({ profile, onSubmitResult }) => {
   const [questionTimings, setQuestionTimings] = useState<number[]>([]);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  const alreadyCompleted = profile && courseId
-    ? (profile.completedCourses ?? []).includes(courseId)
-    : false;
+  const alreadyCompleted =
+    profile && courseId ? (profile.completedCourses ?? []).includes(courseId) : false;
 
-  // Timer logic
-  useEffect(() => {
-    if (step !== 'exam' || !timerEnabled) return;
-
-    setTimeLeft(TIMER_SECONDS);
-    timerRef.current = setInterval(() => {
-      setTimeLeft((prev) => {
-        if (prev <= 1) {
-          // Auto-advance on timeout
-          handleTimeUp();
-          return TIMER_SECONDS;
-        }
-        return prev - 1;
-      });
-    }, 1000);
-
-    return () => {
-      if (timerRef.current) clearInterval(timerRef.current);
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [step, currentQuestion, timerEnabled]);
-
+  // Auto-advance on timer expiry
   const handleTimeUp = useCallback(() => {
     if (!quiz) return;
-    // Mark current question as unanswered (-1) and move on
     setSelectedAnswers((prev) => {
       const updated = [...prev];
       if (updated[currentQuestion] === undefined) updated[currentQuestion] = -1;
@@ -94,14 +66,34 @@ const ExaminationHall: React.FC<Props> = ({ profile, onSubmitResult }) => {
     }
   }, [quiz, currentQuestion]);
 
+  // Timer logic
+  useEffect(() => {
+    if (step !== 'exam' || !timerEnabled) return;
+
+    setTimeLeft(TIMER_SECONDS);
+    timerRef.current = setInterval(() => {
+      setTimeLeft((prev) => {
+        if (prev <= 1) {
+          handleTimeUp();
+          return TIMER_SECONDS;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+
+    return () => {
+      if (timerRef.current) clearInterval(timerRef.current);
+    };
+  }, [step, currentQuestion, timerEnabled, handleTimeUp]);
+
   const beginExam = () => {
     const now = new Date();
     setStartTime(now);
     setQuestionStartTime(now);
+    setStep('exam');
+    setCurrentQuestion(0);
     setSelectedAnswers([]);
     setQuestionTimings([]);
-    setCurrentQuestion(0);
-    setStep('exam');
     setTimeLeft(TIMER_SECONDS);
   };
 
@@ -115,7 +107,6 @@ const ExaminationHall: React.FC<Props> = ({ profile, onSubmitResult }) => {
 
   const goNext = () => {
     if (!quiz) return;
-    // Record time spent on this question
     if (questionStartTime) {
       const elapsed = Date.now() - questionStartTime.getTime();
       setQuestionTimings((prev) => {
@@ -181,58 +172,120 @@ const ExaminationHall: React.FC<Props> = ({ profile, onSubmitResult }) => {
     beginExam();
   };
 
-  // ─── Guard: no quiz/course ────────────────────────────────────────────
+  // ──────────────────────────────────────────────────────────────────────
+  // 1. GENERAL EXAMINATION DIRECTORY (No specific courseId)
+  // ──────────────────────────────────────────────────────────────────────
   if (!quiz || !course) {
+    const publicCoursesList = allCourses.filter((c) => c.id !== 'SECRET-666');
+
     return (
-      <div className="min-h-screen bg-[#090909] flex items-center justify-center">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="text-center space-y-4"
-        >
-          <AlertTriangle className="w-16 h-16 text-[#C6FF00] mx-auto" />
-          <h1 className="text-2xl font-bold text-[#F0EBDD]">Course Not Found</h1>
-          <p className="text-[#888888]">This exam does not exist in our records.</p>
-          <Link to="/courses" className="text-[#C6FF00] underline">
-            Browse Courses
-          </Link>
-        </motion.div>
+      <div className="min-h-screen bg-[#090909] text-white pt-28 sm:pt-32 pb-24 px-6">
+        <div className="max-w-6xl mx-auto space-y-12">
+          <div className="text-center space-y-3">
+            <div className="mb-4 inline-block rounded-full px-3.5 py-1 text-xs font-mono uppercase tracking-widest bg-white/5 border border-white/10 text-white/70">
+              Testing Facility · Open Access
+            </div>
+            <h1
+              className="font-heading font-medium leading-[0.95] tracking-tight uppercase text-white"
+              style={{ fontSize: 'clamp(2.4rem, 6vw, 4.5rem)' }}
+            >
+              EXAMINATION HALL
+            </h1>
+            <p className="text-xs sm:text-sm text-white/60 font-light max-w-xl mx-auto leading-relaxed">
+              Sit for rigorous multiple-choice assessments. Choose any module below to begin your
+              evaluation. All tests can be retaken at will.
+            </p>
+          </div>
+
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {publicCoursesList.map((c) => {
+              const q = getQuizByCourseId(c.id);
+              const isPassed = profile?.completedCourses?.includes(c.id);
+
+              return (
+                <div
+                  key={c.id}
+                  className="rounded-2xl border border-white/10 bg-[#111111]/90 p-6 flex flex-col justify-between hover:border-white/30 transition-all duration-300"
+                >
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between text-xs font-mono">
+                      <span className="px-2.5 py-0.5 rounded-full bg-white/5 border border-white/10 text-white/70">
+                        {c.code}
+                      </span>
+                      <span className="text-white/40 uppercase">{c.difficulty}</span>
+                    </div>
+
+                    <h3 className="font-heading font-medium text-base text-white leading-snug">
+                      {c.title}
+                    </h3>
+
+                    <div className="text-xs font-mono text-white/50 space-y-1 pt-1">
+                      <p>{q ? `${q.questions.length} Questions` : '6 Questions'} · 60s per question</p>
+                      <p>Pass Mark: {q?.passingScore ?? 60}%</p>
+                    </div>
+                  </div>
+
+                  <div className="mt-6 pt-4 border-t border-white/5 flex items-center justify-between">
+                    {isPassed ? (
+                      <span className="text-xs font-mono text-[#C6FF00] flex items-center gap-1.5">
+                        <CheckCircle size={13} />
+                        Completed
+                      </span>
+                    ) : (
+                      <span className="text-xs font-mono text-white/40">Ready to sit</span>
+                    )}
+
+                    <Link
+                      to={`/exam/${c.id}`}
+                      className="bg-white text-black font-medium text-xs px-4 py-2 rounded-full hover:bg-white/80 active:scale-[0.98] transition-all flex items-center gap-1.5"
+                    >
+                      <span>{isPassed ? 'Retake Exam' : 'Enter Exam'}</span>
+                      <ArrowRight size={12} />
+                    </Link>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
       </div>
     );
   }
 
-  // Everyone is free to take the exam - zero apply or registration barriers!
-
-  // ─── Guard: already completed ─────────────────────────────────────────
+  // ──────────────────────────────────────────────────────────────────────
+  // 2. ALREADY COMPLETED SCREEN
+  // ──────────────────────────────────────────────────────────────────────
   if (alreadyCompleted && step === 'pre' && !retakeMode) {
     return (
-      <div className="min-h-screen bg-[#090909] flex items-center justify-center">
+      <div className="min-h-screen bg-[#090909] text-white flex items-center justify-center px-6 pt-28 pb-20">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
-          className="text-center space-y-6 max-w-md px-8"
+          className="text-center space-y-6 max-w-md w-full rounded-2xl border border-white/10 bg-[#111111]/90 p-8"
         >
-          <Award className="w-16 h-16 text-[#C6FF00] mx-auto" />
-          <h1 className="text-2xl font-bold text-[#F0EBDD]">Already Completed</h1>
-          <p className="text-[#888888]">
-            You have already completed{' '}
-            <span className="text-[#F0EBDD] font-semibold">{course.title}</span>. Your grade is
-            on file.
+          <Award className="w-12 h-12 text-[#C6FF00] mx-auto" />
+          <h1 className="font-heading text-2xl font-medium text-white uppercase">
+            Examination Completed
+          </h1>
+          <p className="text-xs sm:text-sm text-white/60 font-light leading-relaxed">
+            You have already sat for and passed{' '}
+            <span className="text-white font-medium">{course.title}</span>. Your grade is registered
+            in your student record.
           </p>
-          <div className="flex flex-col sm:flex-row gap-3 justify-center">
+          <div className="flex flex-col sm:flex-row gap-3 justify-center pt-2">
             <button
               onClick={handleRetake}
-              className="flex items-center gap-2 bg-[#641C2B] text-[#F0EBDD] font-bold px-6 py-3 rounded-lg hover:opacity-90 transition"
+              className="flex items-center justify-center gap-2 border border-white/20 bg-white/5 text-white text-xs font-medium px-5 py-2.5 rounded-full hover:bg-white/10 transition"
             >
-              <RotateCcw className="w-4 h-4" />
+              <RotateCcw className="w-3.5 h-3.5" />
               Retake Exam
             </button>
             <Link
               to={`/courses/${courseId}`}
-              className="flex items-center gap-2 bg-[#C6FF00] text-[#090909] font-bold px-6 py-3 rounded-lg hover:opacity-90 transition justify-center"
+              className="flex items-center justify-center gap-2 bg-white text-black text-xs font-medium px-5 py-2.5 rounded-full hover:bg-white/85 transition"
             >
-              <BookOpen className="w-4 h-4" />
-              Back to Course
+              <BookOpen className="w-3.5 h-3.5" />
+              Back to Syllabus
             </Link>
           </div>
         </motion.div>
@@ -246,83 +299,70 @@ const ExaminationHall: React.FC<Props> = ({ profile, onSubmitResult }) => {
   const hasAnswered = selectedAnswers[currentQuestion] !== undefined;
 
   // ──────────────────────────────────────────────────────────────────────
-  // PRE-EXAM SCREEN
+  // 3. PRE-EXAM SCREEN
   // ──────────────────────────────────────────────────────────────────────
   if (step === 'pre') {
     return (
-      <div className="min-h-screen bg-[#090909] flex items-center justify-center px-4">
+      <div className="min-h-screen bg-[#090909] text-white flex items-center justify-center px-6 pt-28 pb-20">
         <motion.div
-          initial={{ opacity: 0, scale: 0.96 }}
+          initial={{ opacity: 0, scale: 0.98 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.4 }}
-          className="max-w-lg w-full bg-[#F0EBDD]/5 border border-[#F0EBDD]/10 rounded-2xl p-8 space-y-6"
+          className="max-w-lg w-full rounded-2xl border border-white/10 bg-[#111111]/90 p-8 space-y-6"
         >
           <div className="text-center space-y-2">
-            <span className="text-[#C6FF00] text-xs font-mono uppercase tracking-widest">
-              Examination Hall
+            <span className="text-xs font-mono uppercase tracking-widest text-white/40">
+              Examination Evaluation
             </span>
-            <h1 className="text-3xl font-black text-[#F0EBDD] leading-tight">
+            <h1 className="font-heading text-2xl sm:text-3xl font-medium text-white leading-tight uppercase">
               {course.title}
             </h1>
-            <p className="text-[#888888] text-sm">{course.description ?? ''}</p>
+            <p className="text-xs text-white/60 font-light leading-relaxed">
+              {course.description ?? ''}
+            </p>
           </div>
 
-          <div className="grid grid-cols-3 gap-4 text-center">
+          <div className="grid grid-cols-3 gap-3 text-center font-mono">
             {[
               { label: 'Questions', value: totalQuestions },
               { label: 'Pass Mark', value: `${quiz.passingScore ?? 60}%` },
               { label: 'Per Question', value: `${TIMER_SECONDS}s` },
             ].map(({ label, value }) => (
-              <div
-                key={label}
-                className="bg-[#090909] border border-[#F0EBDD]/10 rounded-xl p-4"
-              >
-                <div className="text-2xl font-black text-[#C6FF00]">{value}</div>
-                <div className="text-[#888888] text-xs mt-1">{label}</div>
+              <div key={label} className="rounded-xl border border-white/5 bg-white/5 p-3.5">
+                <div className="text-lg font-bold text-white">{value}</div>
+                <div className="text-[10px] uppercase text-white/40 mt-0.5">{label}</div>
               </div>
             ))}
           </div>
 
-          <div className="bg-[#641C2B]/20 border border-[#641C2B]/40 rounded-xl p-4 text-sm text-[#F0EBDD]/80 space-y-1">
-            <p className="font-semibold text-[#F0EBDD]">⚠ Before You Begin</p>
-            <ul className="list-disc list-inside space-y-1 text-[#888888]">
-              <li>Each question has a {TIMER_SECONDS}-second timer (can be toggled).</li>
-              <li>You may review previous questions but cannot change answered ones.</li>
-              <li>Review all answers before submitting.</li>
-              <li>Academic integrity is expected. No googling. (We know.)</li>
+          <div className="rounded-xl border border-white/5 bg-white/5 p-4 text-xs text-white/60 space-y-2 font-light">
+            <p className="font-medium text-white/80 font-mono uppercase tracking-wide">
+              Evaluation Rules:
+            </p>
+            <ul className="list-disc list-inside space-y-1">
+              <li>{TIMER_SECONDS}-second timer per question (can be toggled).</li>
+              <li>Review all responses before final submission.</li>
+              <li>Calculates your official Brainrot University academic standing.</li>
             </ul>
           </div>
 
-          <div className="flex items-center justify-between">
-            <label className="flex items-center gap-2 cursor-pointer select-none">
-              <div
-                onClick={() => setTimerEnabled((v) => !v)}
-                className={`w-10 h-5 rounded-full transition-colors ${
-                  timerEnabled ? 'bg-[#C6FF00]' : 'bg-[#888888]/40'
-                } relative`}
-              >
-                <div
-                  className={`w-4 h-4 bg-white rounded-full absolute top-0.5 transition-transform ${
-                    timerEnabled ? 'translate-x-5' : 'translate-x-0.5'
-                  }`}
-                />
-              </div>
-              <span className="text-[#888888] text-sm flex items-center gap-1">
-                {timerEnabled ? (
-                  <Timer className="w-3 h-3" />
-                ) : (
-                  <TimerOff className="w-3 h-3" />
-                )}
-                Question Timer
-              </span>
+          <div className="flex items-center justify-between pt-2">
+            <label className="flex items-center gap-2 cursor-pointer select-none text-xs font-mono text-white/60">
+              <input
+                type="checkbox"
+                checked={timerEnabled}
+                onChange={(e) => setTimerEnabled(e.target.checked)}
+                className="rounded border-white/20 bg-white/5 accent-white"
+              />
+              <span>60s Question Timer</span>
             </label>
 
             <button
               onClick={beginExam}
-              className="flex items-center gap-2 bg-[#C6FF00] text-[#090909] font-black px-6 py-3 rounded-xl hover:opacity-90 active:scale-95 transition"
+              className="bg-white text-black font-medium text-xs px-6 py-2.5 rounded-full hover:bg-white/85 active:scale-[0.98] transition-all flex items-center gap-1.5 shadow-md"
             >
-              Begin Examination
-              <ChevronRight className="w-5 h-5" />
+              <span>Begin Exam</span>
+              <ChevronRight className="w-4 h-4" />
             </button>
           </div>
         </motion.div>
@@ -331,421 +371,276 @@ const ExaminationHall: React.FC<Props> = ({ profile, onSubmitResult }) => {
   }
 
   // ──────────────────────────────────────────────────────────────────────
-  // EXAM SCREEN
+  // 4. EXAM QUESTION SCREEN
   // ──────────────────────────────────────────────────────────────────────
   if (step === 'exam') {
     const q = questions[currentQuestion];
     const LABELS = ['A', 'B', 'C', 'D'];
 
     return (
-      <div className="min-h-screen bg-[#090909] flex flex-col">
-        {/* Top bar */}
-        <div className="border-b border-[#F0EBDD]/10 px-6 py-4 flex items-center justify-between">
-          <span className="text-[#888888] text-sm font-mono">
-            {course.title}
-          </span>
+      <div className="min-h-screen bg-[#090909] text-white flex flex-col pt-24 pb-12">
+        {/* Top Header bar */}
+        <div className="border-b border-white/10 px-6 sm:px-12 py-4 flex items-center justify-between">
+          <span className="text-xs font-mono text-white/50 truncate max-w-xs">{course.title}</span>
           <div className="flex items-center gap-4">
             {timerEnabled && (
-              <motion.div
-                key={`timer-${currentQuestion}`}
-                className={`flex items-center gap-1.5 font-mono font-bold text-sm px-3 py-1 rounded-full ${
+              <div
+                className={`flex items-center gap-1.5 font-mono text-xs px-3 py-1 rounded-full border ${
                   timeLeft <= 10
-                    ? 'bg-[#641C2B]/30 text-[#ff6b6b]'
-                    : 'bg-[#C6FF00]/10 text-[#C6FF00]'
+                    ? 'border-red-500/40 bg-red-500/10 text-red-400'
+                    : 'border-white/10 bg-white/5 text-white/70'
                 }`}
               >
                 <Clock className="w-3.5 h-3.5" />
                 {String(Math.floor(timeLeft / 60)).padStart(2, '0')}:
                 {String(timeLeft % 60).padStart(2, '0')}
-              </motion.div>
+              </div>
             )}
-            <span className="text-[#888888] text-sm font-mono">
-              {currentQuestion + 1} / {totalQuestions}
+            <span className="text-xs font-mono text-white/40">
+              Question {currentQuestion + 1} of {totalQuestions}
             </span>
           </div>
         </div>
 
         {/* Progress bar */}
-        <div className="h-1 bg-[#F0EBDD]/5">
-          <motion.div
-            className="h-full bg-[#C6FF00]"
-            animate={{ width: `${progress}%` }}
-            transition={{ duration: 0.4 }}
+        <div className="h-1 bg-white/5 w-full">
+          <div
+            className="h-full bg-white transition-all duration-300"
+            style={{ width: `${progress}%` }}
           />
         </div>
 
-        {/* Content */}
-        <div className="flex-1 flex items-center justify-center px-4 py-8">
-          <div className="max-w-2xl w-full space-y-6">
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={currentQuestion}
-                initial={{ opacity: 0, x: 30 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -30 }}
-                transition={{ duration: 0.25 }}
-                className="space-y-6"
-              >
-                {/* Question */}
-                <div className="space-y-2">
-                  <span className="text-[#C6FF00] text-xs font-mono uppercase tracking-widest">
-                    Question {currentQuestion + 1}
-                  </span>
-                  <h2 className="text-2xl font-bold text-[#F0EBDD] leading-snug">
-                    {q.text}
-                  </h2>
-                </div>
+        {/* Question & Options */}
+        <div className="flex-1 max-w-3xl w-full mx-auto px-6 py-10 flex flex-col justify-between">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={currentQuestion}
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+              transition={{ duration: 0.25 }}
+              className="space-y-8"
+            >
+              <div>
+                <span className="text-[11px] font-mono uppercase tracking-widest text-white/40">
+                  Question {currentQuestion + 1}
+                </span>
+                <h2 className="font-heading text-xl sm:text-2xl font-medium text-white mt-2 leading-relaxed">
+                  {q.text}
+                </h2>
+              </div>
 
-                {/* Options */}
-                <div className="space-y-3">
-                  {q.options.map((option, idx) => {
-                    const isSelected = selectedAnswers[currentQuestion] === idx;
-                    return (
-                      <motion.button
-                        key={idx}
-                        onClick={() => selectAnswer(idx)}
-                        whileHover={{ scale: 1.01 }}
-                        whileTap={{ scale: 0.99 }}
-                        className={`w-full text-left flex items-start gap-4 p-4 rounded-xl border transition-all duration-150 ${
+              <div className="space-y-3">
+                {q.options.map((opt, i) => {
+                  const isSelected = selectedAnswers[currentQuestion] === i;
+                  return (
+                    <button
+                      key={i}
+                      type="button"
+                      onClick={() => selectAnswer(i)}
+                      className={`w-full text-left p-4 sm:p-5 rounded-2xl border transition-all duration-200 flex items-start gap-4 cursor-pointer ${
+                        isSelected
+                          ? 'border-white bg-white/10 text-white shadow-md'
+                          : 'border-white/10 bg-[#111111]/80 hover:border-white/30 text-white/80'
+                      }`}
+                    >
+                      <span
+                        className={`font-mono text-xs w-6 h-6 rounded-full flex items-center justify-center shrink-0 border ${
                           isSelected
-                            ? 'border-[#C6FF00] bg-[#C6FF00]/10 text-[#F0EBDD]'
-                            : 'border-[#F0EBDD]/10 bg-[#F0EBDD]/3 text-[#888888] hover:border-[#F0EBDD]/30 hover:text-[#F0EBDD]'
+                            ? 'border-white bg-white text-black font-bold'
+                            : 'border-white/20 text-white/50'
                         }`}
                       >
-                        <span
-                          className={`flex-shrink-0 w-7 h-7 rounded-full flex items-center justify-center text-xs font-black transition-colors ${
-                            isSelected
-                              ? 'bg-[#C6FF00] text-[#090909]'
-                              : 'bg-[#F0EBDD]/10 text-[#888888]'
-                          }`}
-                        >
-                          {LABELS[idx]}
-                        </span>
-                        <span className="leading-relaxed">{option}</span>
-                      </motion.button>
-                    );
-                  })}
-                </div>
-              </motion.div>
-            </AnimatePresence>
+                        {LABELS[i]}
+                      </span>
+                      <span className="text-xs sm:text-sm font-light leading-relaxed">{opt}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            </motion.div>
+          </AnimatePresence>
 
-            {/* Navigation */}
-            <div className="flex items-center justify-between pt-2">
-              <button
-                onClick={goPrev}
-                disabled={currentQuestion === 0}
-                className="flex items-center gap-2 text-[#888888] hover:text-[#F0EBDD] disabled:opacity-30 disabled:cursor-not-allowed transition"
-              >
-                <ChevronLeft className="w-5 h-5" />
-                Previous
-              </button>
-
-              <button
-                onClick={goNext}
-                disabled={!hasAnswered}
-                className="flex items-center gap-2 bg-[#C6FF00] text-[#090909] font-bold px-6 py-2.5 rounded-xl disabled:opacity-40 disabled:cursor-not-allowed hover:opacity-90 active:scale-95 transition"
-              >
-                {currentQuestion < totalQuestions - 1 ? (
-                  <>
-                    Next Question
-                    <ChevronRight className="w-5 h-5" />
-                  </>
-                ) : (
-                  <>
-                    Review Answers
-                    <Eye className="w-5 h-5" />
-                  </>
-                )}
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  // ──────────────────────────────────────────────────────────────────────
-  // REVIEW SCREEN
-  // ──────────────────────────────────────────────────────────────────────
-  if (step === 'review') {
-    const LABELS = ['A', 'B', 'C', 'D'];
-
-    return (
-      <div className="min-h-screen bg-[#090909] px-4 py-12">
-        <div className="max-w-2xl mx-auto space-y-6">
-          <motion.div
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="text-center space-y-2"
-          >
-            <span className="text-[#C6FF00] text-xs font-mono uppercase tracking-widest">
-              Review
-            </span>
-            <h1 className="text-3xl font-black text-[#F0EBDD]">Check Your Answers</h1>
-            <p className="text-[#888888] text-sm">
-              Verify your selections before final submission. You cannot change answers here.
-            </p>
-          </motion.div>
-
-          <div className="space-y-4">
-            {questions.map((q, qIdx) => {
-              const selected = selectedAnswers[qIdx];
-              return (
-                <motion.div
-                  key={qIdx}
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: qIdx * 0.04 }}
-                  className="bg-[#F0EBDD]/5 border border-[#F0EBDD]/10 rounded-xl p-5 space-y-3"
-                >
-                  <div className="flex items-start gap-3">
-                    <span className="text-[#C6FF00] font-black text-sm mt-0.5">Q{qIdx + 1}</span>
-                    <p className="text-[#F0EBDD] font-medium leading-snug">{q.text}</p>
-                  </div>
-                  <div
-                    className={`inline-flex items-center gap-2 text-sm px-3 py-1.5 rounded-full ${
-                      selected === undefined || selected === -1
-                        ? 'bg-[#641C2B]/30 text-[#ff6b6b]'
-                        : 'bg-[#C6FF00]/10 text-[#C6FF00]'
-                    }`}
-                  >
-                    <span className="font-bold">
-                      {selected === undefined || selected === -1
-                        ? '— Not answered'
-                        : `${LABELS[selected]}: ${q.options[selected]}`}
-                    </span>
-                  </div>
-                </motion.div>
-              );
-            })}
-          </div>
-
-          <div className="flex flex-col sm:flex-row gap-3 justify-center pt-4">
+          {/* Navigation Controls */}
+          <div className="flex items-center justify-between pt-8 border-t border-white/5 mt-8">
             <button
-              onClick={() => {
-                setStep('exam');
-                setCurrentQuestion(0);
-              }}
-              className="flex items-center gap-2 justify-center border border-[#F0EBDD]/20 text-[#F0EBDD] font-bold px-6 py-3 rounded-xl hover:bg-[#F0EBDD]/5 transition"
+              onClick={goPrev}
+              disabled={currentQuestion === 0}
+              className="flex items-center gap-1.5 text-xs font-mono text-white/50 hover:text-white disabled:opacity-20 transition"
             >
               <ChevronLeft className="w-4 h-4" />
-              Back to Exam
+              Previous
             </button>
+
             <button
-              onClick={() => setShowConfirm(true)}
-              className="flex items-center gap-2 justify-center bg-[#C6FF00] text-[#090909] font-black px-8 py-3 rounded-xl hover:opacity-90 active:scale-95 transition"
+              onClick={goNext}
+              disabled={!hasAnswered}
+              className="bg-white text-black font-medium text-xs px-6 py-2.5 rounded-full hover:bg-white/85 disabled:opacity-30 disabled:pointer-events-none transition-all flex items-center gap-1.5 shadow-md"
             >
-              <Send className="w-4 h-4" />
-              Submit Exam
+              <span>{currentQuestion === totalQuestions - 1 ? 'Review Exam' : 'Next Question'}</span>
+              <ChevronRight className="w-4 h-4" />
             </button>
           </div>
         </div>
-
-        {/* Confirm Modal */}
-        <AnimatePresence>
-          {showConfirm && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 px-4"
-            >
-              <motion.div
-                initial={{ scale: 0.9, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                exit={{ scale: 0.9, opacity: 0 }}
-                className="bg-[#141414] border border-[#F0EBDD]/10 rounded-2xl p-8 max-w-sm w-full space-y-5 text-center"
-              >
-                <AlertTriangle className="w-12 h-12 text-yellow-400 mx-auto" />
-                <h2 className="text-xl font-black text-[#F0EBDD]">Final Submission</h2>
-                <p className="text-[#888888] text-sm">
-                  You are about to submit your exam. This action cannot be undone. Are you sure?
-                </p>
-                <div className="flex gap-3">
-                  <button
-                    onClick={() => setShowConfirm(false)}
-                    className="flex-1 border border-[#F0EBDD]/20 text-[#F0EBDD] font-bold py-2.5 rounded-xl hover:bg-[#F0EBDD]/5 transition"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    onClick={submitExam}
-                    className="flex-1 bg-[#C6FF00] text-[#090909] font-black py-2.5 rounded-xl hover:opacity-90 transition"
-                  >
-                    Confirm
-                  </button>
-                </div>
-              </motion.div>
-            </motion.div>
-          )}
-        </AnimatePresence>
       </div>
     );
   }
 
   // ──────────────────────────────────────────────────────────────────────
-  // RESULTS SCREEN
+  // 5. REVIEW SCREEN
   // ──────────────────────────────────────────────────────────────────────
-  if (step === 'results') {
-    let correctCount = 0;
-    questions.forEach((q, i) => {
-      if (selectedAnswers[i] === q.correctIndex) correctCount++;
-    });
-    const gradeResult = calculateGrade(correctCount, totalQuestions, quiz.passingScore);
-    const gradeColor = getGradeColor(gradeResult.grade);
-    const gradeEmoji = getGradeEmoji(gradeResult.grade);
-    const passed = gradeResult.eligible;
-    const LABELS = ['A', 'B', 'C', 'D'];
-
+  if (step === 'review') {
     return (
-      <div className="min-h-screen bg-[#090909] px-4 py-12">
+      <div className="min-h-screen bg-[#090909] text-white pt-28 sm:pt-32 pb-24 px-6">
         <div className="max-w-2xl mx-auto space-y-8">
-          {/* Score reveal */}
-          <div className="text-center space-y-4">
-            <motion.div
-              initial={{ scale: 0.5, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              transition={{ type: 'spring', stiffness: 200, damping: 14 }}
-              className="inline-block"
-            >
-              <div
-                className="text-4xl font-black rounded-3xl p-6 flex flex-col items-center justify-center mx-auto border-4 max-w-md"
-                style={{ color: gradeColor, borderColor: gradeColor, background: `${gradeColor}15` }}
-              >
-                <div className="text-5xl mb-2">{gradeEmoji}</div>
-                <div className="text-xl tracking-wider text-center">{gradeResult.gradeLabel}</div>
-              </div>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, y: 15 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3 }}
-              className="space-y-1"
-            >
-              <div className="text-5xl font-black text-[#F0EBDD]">
-                {gradeResult.percentage}%
-              </div>
-              <p className="text-[#888888] max-w-md mx-auto">{gradeResult.feedback}</p>
-              <p className={`font-bold text-lg ${passed ? 'text-[#C6FF00]' : 'text-[#ff6b6b]'}`}>
-                {passed ? '✓ PASSED' : '✗ FAILED'}
-              </p>
-            </motion.div>
-
-            {/* Stats row */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.5 }}
-              className="flex justify-center gap-6 flex-wrap"
-            >
-              {[
-                { label: 'Correct', value: correctCount, color: '#C6FF00' },
-                { label: 'Incorrect', value: totalQuestions - correctCount, color: '#ff6b6b' },
-                { label: 'Total', value: totalQuestions, color: '#F0EBDD' },
-              ].map(({ label, value, color }) => (
-                <div
-                  key={label}
-                  className="bg-[#F0EBDD]/5 border border-[#F0EBDD]/10 rounded-xl px-6 py-4 text-center"
-                >
-                  <div className="text-2xl font-black" style={{ color }}>
-                    {value}
-                  </div>
-                  <div className="text-[#888888] text-xs">{label}</div>
-                </div>
-              ))}
-            </motion.div>
+          <div className="text-center space-y-2">
+            <span className="text-xs font-mono uppercase tracking-widest text-white/40">
+              Final Examination Review
+            </span>
+            <h1 className="font-heading text-3xl font-medium text-white uppercase">
+              Confirm Submission
+            </h1>
+            <p className="text-xs sm:text-sm text-white/60 font-light">
+              Review your answers below before finalizing your academic grading.
+            </p>
           </div>
 
-          {/* Question Breakdown */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.6 }}
-            className="space-y-3"
-          >
-            <h2 className="text-[#F0EBDD] font-black text-lg">Question Breakdown</h2>
+          <div className="space-y-3">
             {questions.map((q, i) => {
-              const isCorrect = selectedAnswers[i] === q.correctIndex;
-              const userAnswer = selectedAnswers[i];
+              const ans = selectedAnswers[i];
+              const isAnswered = ans !== undefined && ans >= 0;
               return (
                 <div
                   key={i}
-                  className={`rounded-xl border p-4 space-y-2 ${
-                    isCorrect
-                      ? 'border-[#C6FF00]/30 bg-[#C6FF00]/5'
-                      : 'border-[#ff6b6b]/30 bg-[#ff6b6b]/5'
-                  }`}
+                  className="rounded-2xl border border-white/10 bg-[#111111]/80 p-4 flex items-center justify-between"
                 >
-                  <div className="flex items-start gap-3">
-                    {isCorrect ? (
-                      <CheckCircle className="w-5 h-5 text-[#C6FF00] flex-shrink-0 mt-0.5" />
-                    ) : (
-                      <XCircle className="w-5 h-5 text-[#ff6b6b] flex-shrink-0 mt-0.5" />
-                    )}
-                    <div className="space-y-1 flex-1 min-w-0">
-                      <p className="text-[#F0EBDD] font-medium text-sm leading-snug line-clamp-2">
-                        {q.text}
-                      </p>
-                      <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs">
-                        <span className="text-[#888888]">
-                          Your answer:{' '}
-                          <span className={isCorrect ? 'text-[#C6FF00]' : 'text-[#ff6b6b]'}>
-                            {userAnswer === undefined || userAnswer === -1
-                              ? 'Not answered'
-                              : `${LABELS[userAnswer]}: ${q.options[userAnswer]}`}
-                          </span>
-                        </span>
-                        {!isCorrect && (
-                          <span className="text-[#888888]">
-                            Correct:{' '}
-                            <span className="text-[#C6FF00]">
-                              {LABELS[q.correctIndex]}: {q.options[q.correctIndex]}
-                            </span>
-                          </span>
-                        )}
-                      </div>
-                      {userAnswer !== undefined && userAnswer !== -1 && q.feedback && q.feedback[userAnswer] && (
-                        <p className="text-[#888888] text-xs italic">{q.feedback[userAnswer]}</p>
-                      )}
-                    </div>
+                  <div className="min-w-0 pr-4">
+                    <span className="text-[10px] font-mono text-white/40 uppercase block">
+                      Question {i + 1}
+                    </span>
+                    <p className="text-xs text-white/80 font-light truncate">{q.text}</p>
+                    <p className="text-xs text-white/50 font-mono mt-1">
+                      {isAnswered ? `Selected: Option ${ans + 1}` : 'Unanswered'}
+                    </p>
                   </div>
+                  <button
+                    onClick={() => {
+                      setCurrentQuestion(i);
+                      setStep('exam');
+                    }}
+                    className="text-xs font-mono underline text-white/60 hover:text-white shrink-0"
+                  >
+                    Change
+                  </button>
                 </div>
               );
             })}
-          </motion.div>
+          </div>
 
-          {/* Action buttons */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.7 }}
-            className="flex flex-wrap gap-3 justify-center pt-2"
-          >
+          <div className="pt-4 flex items-center justify-between">
+            <button
+              onClick={() => {
+                setCurrentQuestion(0);
+                setStep('exam');
+              }}
+              className="text-xs font-mono text-white/50 hover:text-white"
+            >
+              ← Back to Questions
+            </button>
+
+            <button
+              onClick={() => setShowConfirm(true)}
+              className="bg-white text-black font-medium text-xs sm:text-sm px-8 py-3 rounded-full hover:bg-white/85 transition-all shadow-md"
+            >
+              Submit Examination
+            </button>
+          </div>
+        </div>
+
+        {/* Confirmation Modal */}
+        {showConfirm && (
+          <div className="fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center z-50 px-6">
+            <div className="rounded-2xl border border-white/10 bg-[#111111] p-8 max-w-sm w-full text-center space-y-4">
+              <h3 className="font-heading text-lg font-medium text-white">Final Confirmation</h3>
+              <p className="text-xs text-white/60 font-light leading-relaxed">
+                Are you ready to submit your evaluation and calculate your permanent aura score?
+              </p>
+              <div className="flex gap-3 pt-2">
+                <button
+                  onClick={() => setShowConfirm(false)}
+                  className="flex-1 py-2.5 rounded-full border border-white/20 text-xs font-mono text-white hover:bg-white/5"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={submitExam}
+                  className="flex-1 py-2.5 rounded-full bg-white text-black text-xs font-medium hover:bg-white/85"
+                >
+                  Submit Now
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+    );
+  }
+
+  // ──────────────────────────────────────────────────────────────────────
+  // 6. RESULTS SCREEN
+  // ──────────────────────────────────────────────────────────────────────
+  if (step === 'results') {
+    let correctCount = 0;
+    quiz.questions.forEach((q, i) => {
+      if (selectedAnswers[i] === q.correctIndex) correctCount++;
+    });
+    const gradeResult = calculateGrade(correctCount, totalQuestions, quiz.passingScore);
+
+    return (
+      <div className="min-h-screen bg-[#090909] text-white pt-28 sm:pt-32 pb-24 px-6">
+        <div className="max-w-xl mx-auto rounded-3xl border border-white/10 bg-[#111111]/90 p-8 sm:p-10 text-center space-y-8">
+          <div className="space-y-2">
+            <span className="text-xs font-mono uppercase tracking-widest text-white/40">
+              Examination Results
+            </span>
+            <h1 className="font-heading text-3xl font-medium text-white uppercase">
+              {course.title}
+            </h1>
+          </div>
+
+          {/* Grade Badge */}
+          <div className="py-6 rounded-2xl border border-white/5 bg-white/5 space-y-2">
+            <div className="text-5xl font-mono font-bold text-white">
+              {gradeResult.percentage}%
+            </div>
+            <div className="text-sm font-mono uppercase tracking-widest text-[#C6FF00]">
+              {gradeResult.gradeLabel}
+            </div>
+            <p className="text-xs font-mono text-white/40">
+              {correctCount} of {totalQuestions} Questions Correct
+            </p>
+          </div>
+
+          <p className="text-xs sm:text-sm text-white/60 font-light leading-relaxed">
+            {gradeResult.eligible
+              ? 'Congratulations. Your academic performance has exceeded expectations. Your official certificate is registered in the Student Portal.'
+              : 'Your performance was delightfully cooked. You are encouraged to retake the evaluation whenever you are ready.'}
+          </p>
+
+          <div className="flex flex-col sm:flex-row gap-3 justify-center pt-2">
             <button
               onClick={handleRetake}
-              className="flex items-center gap-2 border border-[#F0EBDD]/20 text-[#F0EBDD] font-bold px-6 py-3 rounded-xl hover:bg-[#F0EBDD]/5 transition"
+              className="py-3 px-6 rounded-full border border-white/20 text-xs font-mono text-white hover:bg-white/5 transition"
             >
-              <RotateCcw className="w-4 h-4" />
-              Retry
+              Retake Examination
             </button>
             <Link
-              to={`/courses/${courseId}`}
-              className="flex items-center gap-2 border border-[#F0EBDD]/20 text-[#F0EBDD] font-bold px-6 py-3 rounded-xl hover:bg-[#F0EBDD]/5 transition"
+              to="/portal"
+              className="py-3 px-6 rounded-full bg-white text-black text-xs font-medium hover:bg-white/85 transition"
             >
-              <BookOpen className="w-4 h-4" />
-              Back to Course
+              View Student Portal →
             </Link>
-            {passed && (
-              <Link
-                to="/portal"
-                className="flex items-center gap-2 bg-[#C6FF00] text-[#090909] font-black px-6 py-3 rounded-xl hover:opacity-90 active:scale-95 transition"
-              >
-                <Award className="w-4 h-4" />
-                View Certificate
-              </Link>
-            )}
-          </motion.div>
+          </div>
         </div>
       </div>
     );
